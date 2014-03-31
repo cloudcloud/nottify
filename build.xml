@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project name="beat" default="tests" basedir=".">
+<project name="nottify" default="simple" basedir=".">
     <property name="product" value="nottify" />
     <property name="version" value="0.0.1" />
 
@@ -15,17 +15,20 @@
 
     <target name="simple">
         <copy file="composer.json" todir="${deploy.location}" />
-        <copy file="nottify_ingest" todir="${deploy.location}" />
-        <copy file="nottify_query" todir="${deploy.location}" />
+        <copy file="bin/nottify_ingest" todir="${deploy.location}bin/" />
+        <copy file="bin/nottify_query" todir="${deploy.location}bin/" />
 
-        <chmod file="${deploy.location}nottify_ingest" perm="0775" />
-        <chmod file="${deploy.location}nottify_query" perm="0775" />
+        <chmod file="${deploy.location}bin/nottify_ingest" perm="0775" />
+        <chmod file="${deploy.location}bin/nottify_query" perm="0775" />
 
-        <copy todir="${deploy.location}nottify">
-            <fileset dir="nottify" />
+        <copy todir="${deploy.location}Nottify">
+            <fileset dir="src/Nottify" />
         </copy>
         <copy todir="${deploy.location}template">
-            <fileset dir="template" />
+            <fileset dir="src/template" />
+        </copy>
+        <copy todir="${deploy.location}web">
+            <fileset dir="web" />
         </copy>
     </target>
 
@@ -38,6 +41,8 @@
     <target name="deploy">
         <delete dir="${deploy.location}" />
         <mkdir dir="${deploy.location}" />
+        <mkdir dir="${deploy.location}bin/" />
+        <mkdir dir="${deploy.location}web/" />
 
         <antcall target="simple" />
 
@@ -47,8 +52,8 @@
     </target>
 
     <target name="apache2">
-        <copy file="nottify.conf" todir="/etc/apache2/sites-enabled/" />
-        <copy file="nottify_basedir.ini" todir="/etc/php5/conf.d/" />
+        <copy file="apache2/nottify.conf" todir="/etc/apache2/sites-enabled/" />
+        <copy file="apache2/nottify_basedir.ini" todir="/etc/php5/conf.d/" />
         <exec executable="sudo" failonerror="true">
             <arg line="/etc/init.d/apache2 stop" />
         </exec>
@@ -58,6 +63,6 @@
     </target>
 
     <target name="ingest">
-        <exec executable="${deploy.location}nottify_ingest" dir="${deploy.location}" />
+        <exec executable="${deploy.location}bin/nottify_ingest" dir="${deploy.location}bin/" />
     </target>
 </project>
