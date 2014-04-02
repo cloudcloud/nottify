@@ -2,10 +2,17 @@
 Personal "cloud"-based music streaming service. Taking the ease of HTML5, with the ease of a PHP web-server, provide a simple mechanism to stream music as if it were from a local player. Assuming a local collection of music files, __nottify__ can index and provide over streaming the content to any browser or device with HTML5 capabilities.
 
 ##configuration
+There are several configuration locations. Build steps require minimal configuration, mainly the location for pushing files locally. General configuration happens within the shared ini file for ease of use.
+
+###make
 * __deploy.location__: Location at which deployment will take place. The apache document root would then be __deploy.location__/web
+
+###config.ini
+* __main.debug__: Enabling extra debug output.
+* __main.ips__: A list of comma separated IP addresses for whitelisting access.
 * __db.path__: A sub-path for the sqlite database to be stored within the __deploy.location__.
-* __debug__: Enabling extra debug output.
-* __cookie.secret__: Key for encryption of all cookie content.
+* __secret.cookie__: Key for encryption of all cookie content.
+* __data.location__: Full path to base directory containing all audio files.
 
 ##requirements
 ```
