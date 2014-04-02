@@ -1,0 +1,29 @@
+{
+    "name": "cloudcloud/nottify",
+    "description": "Simple music listening",
+    "type": "project",
+    "keywords":["music","audio","cloud"],
+    "autoload": {
+        "psr-0": {
+            "": "Nottify/"
+        }
+    },
+    "authors": [
+        {
+            "name":"Allan Shone",
+            "email":"allan.shone@yahoo.com",
+            "homepage":"http://blog.cerealboy.com/",
+            "role":"All"
+        }
+    ],
+    "require": {
+        "php": ">=5.4.9",
+        "mustache/mustache": "2.5.*",
+        "slim/slim": "2.*",
+        "nass600/get-id3": "dev-master"
+    },
+    "minimum-stability": "dev",
+    "config": {
+        "bin-dir": "bin"
+    }
+}

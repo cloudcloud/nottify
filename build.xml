@@ -15,6 +15,7 @@
 
     <target name="simple">
         <copy file="composer.json" todir="${deploy.location}" />
+        <copy file="config.ini" todir="${deploy.location}" />
         <copy file="bin/nottify_ingest" todir="${deploy.location}bin/" />
         <copy file="bin/nottify_query" todir="${deploy.location}bin/" />
 
