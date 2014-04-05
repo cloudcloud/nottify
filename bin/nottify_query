@@ -1,0 +1,92 @@
+#!/usr/bin/env php
+<?php
+/**
+ * Provide some shared and simple querying.
+ */
+
+$autoload = realpath(__DIR__ . '/../vendor/autoload.php');
+if (!file_exists($autoload)) {
+    // hmmm... No composition?
+    exit('Please run `ant deploy` before running `nottify_ingest`');
+}
+
+require_once $autoload;
+
+// load config
+$config_file = realpath(__DIR__ . '/../config.ini');
+try {
+    $config = new \Nottify\Config($config_file);
+} catch (\Exception $e) {
+    exit('Configuration loading failed: [' . $e->getMessage() . ']');
+}
+
+// generate the db filename
+$sqlite_file = realpath(dirname(__DIR__) . '/' . $config->getString('db.path'));
+
+// open the file
+$sqlite = new PDO("sqlite:{$sqlite_file}", null, null, null);
+$sqlite->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+
+// gather the options from the command
+$short_options = 't::a::c::';
+$long_options = array(
+    'track::',
+    'artist::',
+    'action::',
+);
+
+$options = getopt($short_options, $long_options);
+
+if (isset($options['t']) || isset($options['track'])) {
+    $track = '';
+
+    if (isset($options['t'])) {
+        $track = $options['t'];
+    } else if (isset($options['track'])) {
+        $track = $options['track'];
+    }
+
+    if (strlen($track) < 1) {
+        run_help();
+        return;
+    }
+
+    // load the track
+    $track = new \Nottify\File($sqlite, $config, new \getID3());
+    print_r($track->loadFromTitle($track));
+} else if (isset($options['a']) || isset($options['artist'])) {
+    $artist = '';
+
+    if (isset($options['a'])) {
+        $artist = $options['a'];
+    } else if (isset($options['artist'])) {
+        $artist = $options['artist'];
+    }
+
+    if (strlen($artist) < 1) {
+        run_help();
+        return;
+    }
+
+    // find all detail for the artist
+} else {
+    run_help();
+}
+
+function run_help() {
+    echo <<<NOW
+
+    nottify_query [options]
+
+    a|artist {artist}
+        Complete lookup for artist
+
+    t|track {md5}
+        Complete lookup for MD5
+
+    c|action {action}
+        What to do with the above
+
+NOW;
+}
+
