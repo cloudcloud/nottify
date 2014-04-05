@@ -1,0 +1,85 @@
+#!/usr/bin/env php
+<?php
+/**
+ * Complete full ingestion of detail.
+ */
+
+$autoload = realpath(__DIR__ . '/../vendor/autoload.php');
+if (!file_exists($autoload)) {
+    // hmmm... No composition?
+    exit('Please run `ant deploy` before running `nottify_ingest`');
+}
+
+require_once $autoload;
+
+// bring in some configuration
+$config_file = realpath(__DIR__ . '/../config.ini');
+try {
+    $config = new \Nottify\Config($config_file);
+} catch (\Exception $e) {
+    exit('Configuration loading failed: [' . $e->getMessage() . ']');
+}
+
+// determine the sqlite filename
+$sqlite_file = realpath(dirname(__DIR__) . '/' . $config->getString('db.path'));
+
+// fire up the connection
+$sqlite = new PDO("sqlite:{$sqlite_file}", null, null, null);
+$sqlite->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+
+// create the basic tables
+$table = <<<TABLE
+CREATE TABLE IF NOT EXISTS nottify (
+    id INTEGER PRIMARY KEY ASC,
+    artist TEXT(512),
+    title TEXT(512),
+    album TEXT(512),
+    number INTEGER,
+    genre TEXT(128),
+    file TEXT(512),
+    playtime REAL,
+    mime TEXT(64),
+    updated INTEGER,
+    identifier TEXT(42)
+)
+TABLE;
+$sqlite->query($table);
+
+$table = <<<TABLE
+CREATE TABLE IF NOT EXISTS invalid (
+    id INTEGER PRIMARY KEY ASC,
+    file TEXT(512),
+    date TEXT(64),
+    error TEXT(512)
+)
+TABLE;
+$sqlite->query($table);
+
+$table = <<<TABLE
+CREATE TABLE IF NOT EXISTS history (
+    id INTEGER PRIMARY KEY ASC,
+    type TEXT(32),
+    action TEXT(512),
+    date TEXT(64)
+)
+TABLE;
+$sqlite->query($table);
+
+// shared tracking vars
+$track_count = 0;
+$begin_time = time();
+
+// set up the ID3
+$shared_id3 = new getID3();
+$shared_id3->encoding = 'UTF-8';
+$shared_id3->option_md5_data = true;
+$shared_id3->option_md5_data_source = true;
+
+// process those files
+$scanner = new \Nottify\Scanner($sqlite, $config, $shared_id3);
+$files = $scanner->searchFileSystem($config->get('data.location'), 'mp3');
+$track_count = $scanner->processFiles($files);
+
+// provide some feedback
+echo "Completed processing of {$track_count} files!\n\n";
+
