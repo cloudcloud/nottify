@@ -42,7 +42,7 @@ class Scanner
      */
     public function searchFileSystem($location, $file_type)
     {
-        $file_listing = explode("\n", `find {$directory} -name "*.{$file_type}"`);
+        $file_listing = explode("\n", `find {$location} -name "*.{$file_type}"`);
 
         $files = array();
         foreach ($file_listing as $file) {
@@ -63,8 +63,16 @@ class Scanner
      */
     public function processFiles($files)
     {
+        $count = 0;
+
         foreach ($files as $file) {
-            $file->gatherMeta();
+            try {
+                $file->gatherMeta();
+
+                $count++;
+            } catch (\Exception $e) {
+                // push an error entry
+            }
         }
     }
 

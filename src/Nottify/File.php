@@ -41,7 +41,8 @@ abstract class File
         $this->filename = $filename;
 
         $stmt = $this->pdo->prepare('SELECT * FROM nottify WHERE filename=:filename');
-        $results = $stmt->execute(array(':filename' => $this->filename))->fetchAll(PDO::FETCH_ASSOC);
+        $stmt->execute(array(':filename' => $this->filename));
+        $results = $stmt->fetchAll(\PDO::FETCH_ASSOC);
 
         if (count($results) < 1) {
             // does not exist

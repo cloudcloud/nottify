@@ -24,6 +24,18 @@ class Engine
     }
 
     /**
+     * Provide a fresh Track.
+     *
+     * @return \Nottify\Track
+     */
+    public function getTrack()
+    {
+        $track = new \Nottify\Track($this->config);
+
+        return $track;
+    }
+
+    /**
      * Shared Config object.
      *
      * @var \Nottify\Config

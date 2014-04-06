@@ -36,7 +36,7 @@ CREATE TABLE IF NOT EXISTS nottify (
     album TEXT(512),
     number INTEGER,
     genre TEXT(128),
-    file TEXT(512),
+    filename TEXT(512),
     playtime REAL,
     mime TEXT(64),
     updated INTEGER,
@@ -77,7 +77,7 @@ $shared_id3->option_md5_data_source = true;
 
 // process those files
 $scanner = new \Nottify\Scanner($sqlite, $config, $shared_id3);
-$files = $scanner->searchFileSystem($config->get('data.location'), 'mp3');
+$files = $scanner->searchFileSystem($config->getString('data.location'), 'mp3');
 $track_count = $scanner->processFiles($files);
 
 // provide some feedback

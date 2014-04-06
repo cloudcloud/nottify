@@ -10,7 +10,7 @@ namespace Nottify\File;
  * @package Nottify
  * @author Allan Shone <allan.shone@yahoo.com>
  */
-class Mp3 extends File
+class Mp3 extends \Nottify\File
 {
     /**
      * Use the ID3 to gather Meta information.
@@ -30,12 +30,12 @@ class Mp3 extends File
         $this->track['title'] = $this->getMetaItem($analysis, 'title');
         $this->track['album'] = $this->getMetaItem($analysis, 'album');
 
-        $this->track['number'] = $this->getMetaItem($analysis, 'track_number');
+        $this->track['number'] = $this->getMetaItem($analysis, 'track_number', false);
         if (empty($this->track['number'])) {
-            $this->track['number'] = $this->getMetaItem($analysis, 'track');
+            $this->track['number'] = $this->getMetaItem($analysis, 'track', false);
         }
 
-        $this->track['genre'] = $this->getMetaItem($analysis, 'genre');
+        $this->track['genre'] = $this->getMetaItem($analysis, 'genre', false);
         $this->track['file'] = $this->filename;
         $this->track['hash'] = uniqid() . '-' . $this->getMetaItem($analysis, 'md5_data');
         $this->track['playtime'] = $this->getMetaItem($analysis, 'playtime_string');
@@ -55,9 +55,11 @@ class Mp3 extends File
      *  Full ID3 info generated.
      * @param string $item
      *  Name of item to retrieve.
+     * @param bool $update_error optional
+     *  Denotes if the param is optional.
      * @return string
      */
-    protected function getMetaItem($id3, $item)
+    protected function getMetaItem($id3, $item, $update = true)
     {
         if (isset($id3['tags']['id3v2'][$item])) {
             return $id3['tags']['id3v2'][$item];
@@ -67,7 +69,7 @@ class Mp3 extends File
             return $id3['tags']['ape'][$item];
         } else if (isset($id3[$item])) {
             return $id3[$item];
-        } else {
+        } else if ($update) {
             $this->errors[] = 'Unable to find ' . $item;
 
             return '';

@@ -32,6 +32,7 @@ class Config
      *  Name of the method being called.
      * @param array $arguments
      *  All provided arguments.
+     * @return mixed
      * @throws \InvalidArgumentException
      */
     public function __call($name, $arguments)
@@ -45,12 +46,14 @@ class Config
         if (substr($name, 0, 3) === 'get') {
             switch (strtolower($type)) {
                 case 'bool':
-                    return boolval($this->config[$config_name]);
+                    return (bool)($this->config[$config_name]);
                 case 'string':
                     return strval($this->config[$config_name]);
                 case 'int':
                 case 'integer':
                     return intval($this->config[$config_name]);
+                case 'csv':
+                    return explode(',', $this->config[$config_name]);
             }
 
             throw new \InvalidArgumentException('Invalid type selection');
@@ -120,10 +123,16 @@ class Config
             throw new \InvalidArgumentException('Configuration file does not exist');
         }
 
-        $this->config = parse_ini_file($this->filename, true);
+        $config = parse_ini_file($this->filename, true);
 
-        if (empty($this->config)) {
+        if (empty($config)) {
             throw new \RuntimeException('Configuration is empty');
+        }
+
+        foreach ($config as $section => $specific) {
+            foreach ($specific as $name => $value) {
+                $this->config["{$section}.{$name}"] = $value;
+            }
         }
     }
 
