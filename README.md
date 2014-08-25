@@ -5,6 +5,7 @@ Nottify is a self-managed replacement for Spotify. For those with many media fil
 ```
 revel/cmd
 revel/revel
+go-sql-driver/mysql
 ```
 
 ##usage
@@ -12,4 +13,5 @@ Initial usage requires processing of base content, after setting up configuratio
 
 ###configuration
 * ``base_path`` The initial path for media files.
+* ``pin_code`` The login PIN for actual usage.
 
