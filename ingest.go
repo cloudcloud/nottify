@@ -3,6 +3,8 @@ package main
 import (
 	"database/sql"
 	"fmt"
+	"go/build"
+	"path"
 
 	"github.com/revel/revel"
 )
@@ -20,18 +22,43 @@ For example:
 `,
 }
 
+var (
+	gopath string
+	Config *revel.MergedConfig
+)
+
 func init() {
 	cmdIngest.Run = ingestRun
 }
 
 func ingestRun(args []string) {
-	mysqlDsn := revel.Config.StringDefault("nottify.mysql_dsn", "derp:@/nottify")
+	gopath := build.Default.GOPATH
 
-	_, err := sql.Open("mysql", mysqlDsn)
-	fmt.Println(err)
+	revel.ConfPaths = []string{path.Join(gopath, "src/github.com/cloudcloud/nottify/src/conf")}
+	Config, err := revel.LoadConfig("app.conf")
+	if err != nil || Config == nil {
+		errorf("Failed to Config")
+	}
 
-	//queryResult, err := db.Query("SELECT * FROM songs")
-	//fmt.Println(queryResult)
+	mysqlDsn, confErr := Config.String("nottify.mysql_dsn")
+	if confErr == false || mysqlDsn == "" {
+		errorf("No database details have been defined")
+	}
 
-	//fmt.Println(err)
+	db, err := sql.Open("mysql", mysqlDsn)
+	if err != nil {
+		panic(err.Error())
+	}
+	defer db.Close()
+
+	err = db.Ping()
+	if err != nil {
+		panic(err.Error())
+	}
+
+	queryResult, err := db.Query("SHOW databases")
+	if err != nil {
+		panic(err.Error())
+	}
+	fmt.Println(queryResult)
 }
