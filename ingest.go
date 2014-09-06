@@ -56,12 +56,6 @@ func ingestRun(args []string) {
 		panic(err.Error())
 	}
 
-	//queryResult, err := db.Query("SHOW databases")
-	//if err != nil {
-	//	panic(err.Error())
-	//}
-	//fmt.Println(queryResult)
-
 	not_obj = nottify.Build(config, db)
 	not_obj.LoadDir("/media/files/music/")
 }
