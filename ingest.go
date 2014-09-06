@@ -2,10 +2,10 @@ package main
 
 import (
 	"database/sql"
-	"fmt"
 	"go/build"
 	"path"
 
+	"github.com/cloudcloud/nottify/src/nottify"
 	"github.com/revel/revel"
 )
 
@@ -23,8 +23,8 @@ For example:
 }
 
 var (
-	gopath string
-	Config *revel.MergedConfig
+	gopath  string
+	not_obj *nottify.Nottify
 )
 
 func init() {
@@ -35,12 +35,12 @@ func ingestRun(args []string) {
 	gopath := build.Default.GOPATH
 
 	revel.ConfPaths = []string{path.Join(gopath, "src/github.com/cloudcloud/nottify/src/conf")}
-	Config, err := revel.LoadConfig("app.conf")
-	if err != nil || Config == nil {
+	config, err := revel.LoadConfig("app.conf")
+	if err != nil || config == nil {
 		errorf("Failed to Config")
 	}
 
-	mysqlDsn, confErr := Config.String("nottify.mysql_dsn")
+	mysqlDsn, confErr := config.String("nottify.mysql_dsn")
 	if confErr == false || mysqlDsn == "" {
 		errorf("No database details have been defined")
 	}
@@ -56,9 +56,12 @@ func ingestRun(args []string) {
 		panic(err.Error())
 	}
 
-	queryResult, err := db.Query("SHOW databases")
-	if err != nil {
-		panic(err.Error())
-	}
-	fmt.Println(queryResult)
+	//queryResult, err := db.Query("SHOW databases")
+	//if err != nil {
+	//	panic(err.Error())
+	//}
+	//fmt.Println(queryResult)
+
+	not_obj = nottify.Build(config, db)
+	not_obj.LoadDir("/media/files/music/")
 }
