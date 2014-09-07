@@ -30,8 +30,15 @@ func (n *Nottify) loadFile(path string, file os.FileInfo) {
 	uuid := n.genUUID(file)
 
 	s := new(Song)
+	s.filename = path
 	if !s.LoadDatabase(database, uuid) {
 		fmt.Printf("Unable to load %s\n", uuid)
+		return
+	}
+
+	err := s.ProcessSong(file)
+	if err != "" {
+		fmt.Printf("Failed to process %s\n", uuid)
 		return
 	}
 

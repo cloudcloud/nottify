@@ -1,6 +1,12 @@
 package nottify
 
-import "database/sql"
+import (
+	"database/sql"
+	"fmt"
+	"os"
+
+	"github.com/cloudcloud/nottify/src/id3"
+)
 
 var (
 	db *sql.DB
@@ -24,10 +30,6 @@ func (oSong Song) GetArtist() string {
 	return oSong.artist
 }
 
-func (oSong Song) SetID(uuid string) {
-	oSong.id = uuid
-}
-
 func (oSong Song) LoadDatabase(data *sql.DB, uuid string) bool {
 	db = data
 
@@ -42,4 +44,14 @@ func (oSong Song) LoadDatabase(data *sql.DB, uuid string) bool {
 	}
 
 	return true
+}
+
+func (oSong Song) ProcessSong(file os.FileInfo) string {
+	filesize := fmt.Sprintf("%d", file.Size())
+
+	tags := id3.Read(oSong.filename)
+
+	_ = filesize
+	_ = tags
+	return ""
 }
