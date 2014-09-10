@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"fmt"
 	"strconv"
+	"strings"
 	"unicode/utf8"
 )
 
@@ -27,7 +28,6 @@ type id3 struct {
 	artist     string
 	album      string
 	year       int
-	comment    string
 	track      int
 	genre_code int
 	genre      string
@@ -42,7 +42,7 @@ func Read(filename string) *id3 {
 		err = fmt.Sprintf("Unable to get V2 [%s]\n", err)
 	}
 
-	if len(i.title) < 1 && len(i.artist) < 1 {
+	if len(i.title) < 1 || len(i.artist) < 1 {
 		err = i.readV1(filename)
 		if err != "" {
 			err = fmt.Sprintf("Unable to get V1 [%s]\n", err)
@@ -63,7 +63,7 @@ func getString(buf []byte) string {
 		p = len(buf)
 	}
 
-	return cleanUTF8(string(buf[0:p]))
+	return strings.TrimSpace(cleanUTF8(string(buf[0:p])))
 }
 
 func getInt(buf []byte) int {

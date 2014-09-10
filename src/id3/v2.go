@@ -1,10 +1,8 @@
 package id3
 
 import (
-	"fmt"
 	"os"
 	"strconv"
-	"strings"
 )
 
 const (
@@ -47,44 +45,43 @@ func (i *id3) readV2(filename string) string {
 			break
 		}
 
-		trimmed := strings.TrimSpace(frame.data)
 		if frame.name == "TIT2" {
-			i.title = trimmed
+			i.title = frame.data
 		} else if frame.name == "TPE1" {
-			i.artist = trimmed
+			i.artist = frame.data
 		} else if frame.name == "TCOM" {
 			if i.artist == "" {
-				i.artist = trimmed
+				i.artist = frame.data
 			}
 		} else if frame.name == "TPE2" {
 			if i.artist == "" {
-				i.artist = trimmed
+				i.artist = frame.data
 			}
 		} else if frame.name == "TOPE" {
 			if i.artist == "" {
-				i.artist = trimmed
+				i.artist = frame.data
 			}
 		} else if frame.name == "TALB" {
-			i.album = trimmed
+			i.album = frame.data
 		} else if frame.name == "TRCK" {
-			i.track, _ = strconv.Atoi(trimmed)
+			i.track, _ = strconv.Atoi(frame.data)
 		} else if frame.name == "TIT1" {
-			i.genre = trimmed
+			i.genre = frame.data
 		} else if frame.name == "TCON" {
-			// this is sort of genre detail
 			if i.genre == "" {
-				i.genre = trimmed
+				i.genre = frame.data
 			}
 		} else if frame.name == "TYER" {
-			i.year, _ = strconv.Atoi(trimmed)
+			i.year, _ = strconv.Atoi(frame.data)
 		} else if frame.name == "TDAT" {
 			if i.year < 1 {
-				i.year, _ = strconv.Atoi(trimmed)
+				i.year, _ = strconv.Atoi(frame.data)
 			}
 		} else if len(frame.name) != 4 || isSkippable(frame.name) {
 			continue
 		} else {
-			fmt.Printf("Found [%s]:[%s]\n", frame.name, trimmed)
+			// might come handy in the future
+			// fmt.Printf("Found [%s]:[%s]\n", frame.name, trimmed)
 		}
 	}
 
