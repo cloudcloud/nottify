@@ -29,6 +29,7 @@ type id3 struct {
 	album      string
 	year       int
 	track      int
+	comment    string
 	genre_code int
 	genre      string
 }
@@ -49,6 +50,7 @@ func Read(filename string) *id3 {
 		}
 	}
 
+	i.Print()
 	return i
 }
 

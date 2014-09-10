@@ -2,17 +2,17 @@ package nottify
 
 import (
 	"crypto/sha1"
-	"database/sql"
 	"fmt"
 	"os"
 	"path/filepath"
 	"strings"
 
+	"code.google.com/p/go-sqlite/go1/sqlite3"
 	"github.com/revel/revel"
 )
 
 var (
-	database *sql.DB
+	database *sqlite3.Conn
 	config   *revel.MergedConfig
 )
 
@@ -73,7 +73,7 @@ func (n *Nottify) genUUID(f os.FileInfo) string {
 	return ret
 }
 
-func Build(conf *revel.MergedConfig, db *sql.DB) *Nottify {
+func Build(conf *revel.MergedConfig, db *sqlite3.Conn) *Nottify {
 	m := new(Nottify)
 
 	database = db

@@ -1,15 +1,15 @@
 package nottify
 
 import (
-	"database/sql"
 	"fmt"
 	"os"
 
+	"code.google.com/p/go-sqlite/go1/sqlite3"
 	"github.com/cloudcloud/nottify/src/id3"
 )
 
 var (
-	db *sql.DB
+	db *sqlite3.Conn
 )
 
 type Song struct {
@@ -30,16 +30,12 @@ func (oSong Song) GetArtist() string {
 	return oSong.artist
 }
 
-func (oSong Song) LoadDatabase(data *sql.DB, uuid string) bool {
+func (oSong Song) LoadDatabase(data *sqlite3.Conn, uuid string) bool {
 	db = data
 
-	rows, err := db.Query("SELECT filename, artist FROM song WHERE id=?", uuid)
-	if err != nil {
-		return false
-	}
-
-	for rows.Next() {
-		err = rows.Scan(oSong.filename, oSong.artist)
+	args := sqlite3.NamedArgs{"$id": uuid}
+	for s, e := db.Query("SELECT filename, artist FROM song WHERE id=$id", args); e == nil; e = s.Next() {
+		e = s.Scan(oSong.filename, oSong.artist)
 		break
 	}
 
