@@ -3,18 +3,17 @@ package id3
 import (
 	"bytes"
 	"fmt"
-	"os"
+	"strconv"
+	"unicode/utf8"
 )
 
 const (
-	tag_size  = 128
-	tag_start = 3
-
-	title_end   = 30
-	artist_end  = 60
-	album_end   = 90
-	year_end    = 94
-	comment_end = 124
+	version_length = 2
+	flag_length    = 1
+	size_length    = 4
+	frame_id       = 4
+	frame_size     = 4
+	frame_flags    = 2
 )
 
 var (
@@ -23,52 +22,38 @@ var (
 
 type id3 struct {
 	filename string
+
+	title      string
+	artist     string
+	album      string
+	year       int
+	comment    string
+	track      int
+	genre_code int
+	genre      string
 }
 
 func Read(filename string) *id3 {
 	i := new(id3)
 	i.filename = filename
 
-	err := readV1(filename)
-	if err != "" {
-		err = fmt.Sprintf("Unable to get V1 [%s]\n", err)
-	}
-
-	err = readV2(filename)
+	err := i.readV2(filename)
 	if err != "" {
 		err = fmt.Sprintf("Unable to get V2 [%s]\n", err)
+	}
+
+	if len(i.title) < 1 && len(i.artist) < 1 {
+		err = i.readV1(filename)
+		if err != "" {
+			err = fmt.Sprintf("Unable to get V1 [%s]\n", err)
+		}
 	}
 
 	return i
 }
 
-func readV1(filename string) string {
-	buffer := make([]byte, tag_size)
-
-	file, err := os.Open(filename)
-	defer file.Close()
-
-	if err != nil {
-		return "No good for V1"
-	}
-
-	file.Seek(-tag_size, 2)
-	file.Read(buffer)
-
-	if getString(buffer[0:tag_start]) != "TAG" {
-		return "No V1 tag found"
-	}
-
-	title := getString(buffer[tag_start:title_end])
-
-	_ = title
-	return ""
-}
-
-func readV2(filename string) string {
-	//
-
-	return ""
+func (i *id3) Print() {
+	fmt.Printf("[%s] - [%s]\n", i.artist, i.title)
 }
 
 func getString(buf []byte) string {
@@ -78,5 +63,34 @@ func getString(buf []byte) string {
 		p = len(buf)
 	}
 
-	return string(buf[0:p])
+	return cleanUTF8(string(buf[0:p]))
+}
+
+func getInt(buf []byte) int {
+	p := bytes.IndexByte(buf, 0)
+
+	if p == -1 {
+		p = len(buf)
+	}
+
+	response, _ := strconv.Atoi(cleanUTF8(string(buf[0:p])))
+	return response
+}
+
+func cleanUTF8(s string) string {
+	if !utf8.ValidString(s) {
+		v := make([]rune, 0, len(s))
+		for i, r := range s {
+			if r == utf8.RuneError {
+				_, size := utf8.DecodeRuneInString(s[i:])
+				if size == 1 {
+					continue
+				}
+			}
+			v = append(v, r)
+		}
+		s = string(v)
+	}
+
+	return s
 }
