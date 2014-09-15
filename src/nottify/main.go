@@ -31,7 +31,10 @@ func (n *Nottify) loadFile(path string, file os.FileInfo) {
 
 	s := new(Song)
 	s.filename = path
-	if !s.LoadDatabase(database, uuid) {
+	s.id = uuid
+
+	s = s.LoadDatabase(database, uuid)
+	if s == nil {
 		fmt.Printf("Unable to load %s\n", uuid)
 		return
 	}

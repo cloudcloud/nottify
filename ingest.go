@@ -1,7 +1,6 @@
 package main
 
 import (
-	"fmt"
 	"go/build"
 	"path"
 
@@ -54,7 +53,7 @@ func ingestRun(args []string) {
 	setupData(db)
 
 	not_obj = nottify.Build(config, db)
-	//not_obj.LoadDir("/media/files/music/")
+	not_obj.LoadDir("/media/files/music/")
 }
 
 func setupData(db *sqlite3.Conn) {
@@ -66,25 +65,65 @@ func setupData(db *sqlite3.Conn) {
 		s.Scan(&name)
 		tables = append(tables, name)
 	}
-	fmt.Println(tables)
 
 	if len(tables) < 2 {
-		sql = "DROP TABLE song"
+		//sql = "DROP TABLE IF EXISTS song; DROP TABLE IF EXISTS errors"
+		//db.Exec(sql)
+
+		sql = `
+CREATE TABLE IF NOT EXISTS song(
+	id TEXT(52),
+	title TEXT,
+	artist TEXT,
+	album TEXT,
+	length INTEGER(4),
+	genre TEXT,
+	track INTEGER(2),
+	year INTEGER(4),
+	filename TEXT,
+	filesize INTEGER,
+	comment TEXT,
+	UNIQUE(id)
+)`
 		db.Exec(sql)
 
-		sql = "CREATE TABLE IF NOT EXISTS song(id TEXT(52), title TEXT, artist TEXT, album TEXT, length INTEGER, genre TEXT, filename TEXT)"
+		sql = `
+CREATE TABLE IF NOT EXISTS version(
+	id INTEGER,
+	date INTEGER,
+	version TEXT,
+	applied INTEGER
+)`
 		db.Exec(sql)
 
-		//sql = "CREATE TABLE IF NOT EXISTS playlist"
-		//db.Exec(sql)
+		sql = `
+CREATE TABLE IF NOT EXISTS playlist(
+	name TEXT,
+	song TEXT(52),
+	position INTEGER,
+	FOREIGN KEY (song) REFERENCES song (id)
+)`
+		db.Exec(sql)
 
-		//sql = "CREATE TABLE IF NOT EXISTS history"
-		//db.Exec(sql)
+		sql = `
+CREATE TABLE IF NOT EXISTS history(
+	id INTEGER,
+	date INTEGER,
+	song TEXT(52),
+	FOREIGN KEY (song) REFERENCES song (id)
+)`
+		db.Exec(sql)
 
-		//sql = "CREATE TABLE IF NOT EXISTS errors"
-		//db.Exec(sql)
-
-		//sql = "CREATE TABLE IF NOT EXISTS "
-		//db.Exec(sql)
+		sql = `
+CREATE TABLE IF NOT EXISTS errors(
+	id INTEGER,
+	filename TEXT,
+	found BLOB,
+	PRIMARY KEY (id)
+)`
+		db.Exec(sql)
 	}
+
+	// get the current version
+	// check for compat
 }

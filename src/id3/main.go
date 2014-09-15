@@ -32,6 +32,7 @@ type id3 struct {
 	comment    string
 	genre_code int
 	genre      string
+	length     int
 }
 
 func Read(filename string) *id3 {
@@ -50,8 +51,39 @@ func Read(filename string) *id3 {
 		}
 	}
 
-	i.Print()
 	return i
+}
+
+func (i *id3) GetTitle() string {
+	return i.title
+}
+
+func (i *id3) GetArtist() string {
+	return i.artist
+}
+
+func (i *id3) GetAlbum() string {
+	return i.album
+}
+
+func (i *id3) GetLength() int {
+	return i.length
+}
+
+func (i *id3) GetGenre() string {
+	return i.genre
+}
+
+func (i *id3) GetTrack() int {
+	return i.track
+}
+
+func (i *id3) GetYear() int {
+	return i.year
+}
+
+func (i *id3) GetComment() string {
+	return i.comment
 }
 
 func (i *id3) Print() {
