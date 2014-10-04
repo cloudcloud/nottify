@@ -1,0 +1,33 @@
+
+body {
+    padding-bottom: 70px;
+}
+
+.row.song {
+    width: 0 auto;
+    margin-bottom: 4px;
+    padding-left: 10px;
+    height: 34px;
+}
+
+.row.song:hover {
+    background: #efefef;
+    border: #f2f2f2;
+}
+
+.row.song .actions {
+    position: relative;
+    width: 125px;
+}
+
+.row.song .actions .btn-group {
+    position: absolute;
+    height: 32px;
+    top: 50%;
+    margin-top: 6px;
+    display: inline-block;
+}
+
+.row.song a:hover {
+    text-decoration: none;
+}

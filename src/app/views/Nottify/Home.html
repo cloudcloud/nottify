@@ -1,7 +1,19 @@
 {{set . "title" "Nottify"}}
 {{template "header.html" .}}
 
-<div class="navbar navbar-inverse navbar-fixed-bottom" role="navigation">
+<div class="jumbotron">
+    <div class="container">
+        <div class="row">
+            <h2>Nottify</h2>
+        </div>
+    </div>
+</div>
+
+<div class="container" id="main-body">
+    <!-- derp -->
+</div>
+
+<nav class="navbar navbar-inverse navbar-fixed-bottom" role="navigation">
     <div class="container">
         <div class="navbar-header">
             <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
@@ -10,10 +22,31 @@
                 <span class="icon-bar"></span>
                 <span class="icon-bar"></span>
             </button>
-            <a class="navbar-brand" href="/Nottify/Home">nottify</a>
+            <a class="navbar-brand" href="#!/home">nottify</a>
+        </div>
+
+        <div class="collapse navbar-collapse">
+            <p class="navbar-text">
+                Now playing: <span class="now-playing"></span>
+            </p>
+
+            <p class="navbar-text navbar-right">
+                <a href="#!/previous" class="btn btn-info btn-sm" role="button">
+                    <span class="glyphicon glyphicon-fast-backward"></span>
+                </a>
+                <a href="#!/pause" class="btn btn-info btn-sm" role="button">
+                    <span class="glyphicon glyphicon-play"></span>
+                </a>
+                <a href="#!/stop" class="btn btn-info btn-sm" role="button">
+                    <span class="glyphicon glyphicon-stop"></span>
+                </a>
+                <a href="#!/next" class="btn btn-info btn-sm" role="button">
+                    <span class="glyphicon glyphicon-fast-forward"></span>
+                </a>
+            </p>
         </div>
     </div>
-</div>
+</nav>
 
 {{template "footer.html" .}}
 

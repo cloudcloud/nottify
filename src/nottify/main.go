@@ -5,6 +5,8 @@ import (
 	"fmt"
 	"os"
 	"path/filepath"
+	"regexp"
+	"strconv"
 	"strings"
 
 	"code.google.com/p/go-sqlite/go1/sqlite3"
@@ -83,4 +85,30 @@ func Build(conf *revel.MergedConfig, db *sqlite3.Conn) *Nottify {
 	config = conf
 
 	return m
+}
+
+func (n *Nottify) LoadRandom(limit int) map[int]sqlite3.RowMap {
+	result := make(map[int]sqlite3.RowMap)
+	count := 0
+	sql := "select * from song order by random() limit " + strconv.Itoa(limit) + ";"
+
+	for s, e := database.Query(sql); e == nil; e = s.Next() {
+		row := make(sqlite3.RowMap)
+		s.Scan(row)
+
+		row["artist_seo"] = makeSeo(fmt.Sprintf("%s", row["artist"]))
+		row["title_seo"] = makeSeo(fmt.Sprintf("%s", row["title"]))
+
+		result[count] = row
+		count += 1
+	}
+
+	return result
+}
+
+func makeSeo(s string) string {
+	reg, _ := regexp.Compile("[^A-Za-z0-9]+")
+	s = strings.ToLower(reg.ReplaceAllString(s, "-"))
+
+	return s
 }
