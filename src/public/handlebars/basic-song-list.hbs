@@ -1,0 +1,31 @@
+
+<div class="row song" id="song-{{row-id}}">
+    <div class="actions pull-right">
+        <div class="btn-group">
+            <a href="#!/play/{{row-id}}" class="btn btn-info btn-xs" role="button" data-action="play">
+                <span class="glyphicon glyphicon-play"></span>
+            </a>
+            <a href="#!/queue/{{row-id}}" class="btn btn-info btn-xs" role="button" data-action="queue">
+                <span class="glyphicon glyphicon-chevron-right"></span>
+            </a>
+            <a href="#!/love/{{row-id}}" class="btn btn-info btn-xs" role="button" data-action="favourite">
+                <span class="glyphicon glyphicon-heart"></span>
+            </a>
+            <a href="#!/add/{{row-id}}" class="btn btn-info btn-xs" role="button" data-action="add">
+                <span class="glyphicon glyphicon-th-list"></span>
+            </a>
+            <a href="#!/edit/{{row-id}}" class="btn btn-info btn-xs" role="button" data-action="edit">
+                <span class="glyphicon glyphicon-pencil"></span>
+            </a>
+        </div>
+    </div>
+    <div class="inner pull-left">
+        <div class="album">
+        </div>
+        <div class="title">
+            <a data-artist="{{artist}}" data-title="{{title}}" id="artist-{{artist_seo}}" href="#!/search/artist={{artist}}">{{artist}}</a><span> - </span>
+            <a data-artist="{{artist}}" data-title="{{title}}" id="title-{{artist_seo}}-{{title_seo}}" href="#!/search/artist={{artist}}&title={{title}}">{{title}}</a>
+        </div>
+    </div>
+</div>
+
