@@ -43,6 +43,8 @@ $(document).ready(function() {
                 }
 
                 return o;
+            }, load = function(template, url) {
+                // this function is used to load an external template
             };
 
         return {
@@ -87,7 +89,7 @@ $(document).ready(function() {
             },
 
             home: function() {
-                //
+                var url = '', template = '';
             },
 
             scan: function(self, url) {
@@ -99,16 +101,29 @@ $(document).ready(function() {
                 }
             },
 
+            unload: function(self, e) {
+                console.log(self, e);
+
+                return false;
+            },
+
             init: function(self) {
                 $(window).bind('popstate', self, function(e) {
                     var self = e.data, url = e.currentTarget.location;
                     self.scan(self, url);
                 });
                 self.scan(self, window.location.href);
+
+                $(window).unload(self, function(e) {
+                    var self = e.data, url = e.currentTarget.location;
+                    self.unload(self, e);
+                });
             }
         }
     })(jQuery);
 
     n.init(n);
+    window.onunload = function() { return 'Unsaved modifications will be lost.'; };
+    window.onbeforeunload = window.onunload;
 });
 
