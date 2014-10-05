@@ -4,10 +4,13 @@ import (
 	"crypto/sha1"
 	"fmt"
 	"os"
+	"path"
 	"path/filepath"
 	"regexp"
 	"strconv"
 	"strings"
+
+	"go/build"
 
 	"code.google.com/p/go-sqlite/go1/sqlite3"
 	"github.com/revel/revel"
@@ -87,6 +90,29 @@ func Build(conf *revel.MergedConfig, db *sqlite3.Conn) *Nottify {
 	return m
 }
 
+func LoadConnection() *Nottify {
+	gopath := build.Default.GOPATH
+	revel.ConfPaths = []string{path.Join(gopath, "src/github.com/cloudcloud/nottify/src/conf")}
+	config, err := revel.LoadConfig("app.conf")
+
+	if err != nil || config == nil {
+		panic("Failed to Config")
+	}
+
+	dsn, db_err := config.String("nottify.sqlite_path")
+	if db_err == false || dsn == "" {
+		panic("No database details have been defined")
+	}
+
+	db, err := sqlite3.Open(dsn)
+	if err != nil {
+		panic(err.Error())
+	}
+
+	m := Build(config, db)
+	return m
+}
+
 func (n *Nottify) LoadRandom(limit int) map[int]sqlite3.RowMap {
 	result := make(map[int]sqlite3.RowMap)
 	count := 0
@@ -104,6 +130,21 @@ func (n *Nottify) LoadRandom(limit int) map[int]sqlite3.RowMap {
 	}
 
 	return result
+}
+
+func (n *Nottify) GetFilename(uuid string) string {
+	var filename string
+	sql := "select filename from song where id=$uuid"
+	args := sqlite3.NamedArgs{"$uuid": uuid}
+
+	for s, e := database.Query(sql, args); e == nil; e = s.Next() {
+		row := make(sqlite3.RowMap)
+		s.Scan(row)
+
+		filename = fmt.Sprintf("%s", row["filename"])
+	}
+
+	return filename
 }
 
 func makeSeo(s string) string {
