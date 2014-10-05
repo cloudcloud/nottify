@@ -4,5 +4,8 @@ GET /favicon.ico 404
 
 GET /public/*filepath Static.Serve("public")
 
+GET /api/song/:uuid Api.Song
+GET /api/:action/*detail Api.:action
+
 * /:controller/:action :controller.:action
 
