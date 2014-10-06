@@ -4,30 +4,13 @@
 if ("undefined" == typeof jQuery)
     throw new Error('jQuery is required');
 
+Handlebars.registerHelper("debug", function(optionalValue) {
+    console.log("Current Context");
+    console.log("====================");
+    console.log(this);
+});
+
 $(document).ready(function() {
-    $('#loginModal .login-modal button').click(function(n) {
-        n.preventDefault();
-
-        var $n = $('#loginModal #login-holder'),
-            $s = parseInt(n.target.value),
-            $f = $('#loginForm #form-pin-code'),
-            $a = $f.val();
-
-        if ($f.val().length === 5) {
-            console.log('Done!');
-            return;
-        }
-
-        $a = $a + '' + $s;
-        $n.append('<kbd>'+$s+'</kbd> ');
-        $f.val($a);
-
-        if ($a.length === 5) {
-            $('#loginForm').submit();
-            return;
-        }
-    });
-
     var n = (function(j) {
         var np = undefined, pl = undefined, state = 0, $ = j,
             parse = function(u) {
@@ -43,8 +26,14 @@ $(document).ready(function() {
                 }
 
                 return o;
-            }, load = function(template, url) {
-                // this function is used to load an external template
+            }, load = function(template, url, container) {
+                var htmlContent, dataContent, path = '/public/handlebars/' + template + '.hbs';
+
+                $.ajax(path,{async:false}).done(function(r) { htmlContent = r; });
+                $.ajax(url,{async:false}).done(function(r) { dataContent = r; });
+
+                var template = Handlebars.compile(htmlContent);
+                $(container).html(template(dataContent));
             };
 
         return {
@@ -89,7 +78,9 @@ $(document).ready(function() {
             },
 
             home: function() {
-                var url = '', template = '';
+                var url = '/api/songs', template = 'basic-song-list';
+
+                load(template, url, $('#main-body'));
             },
 
             scan: function(self, url) {

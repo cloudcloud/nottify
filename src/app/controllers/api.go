@@ -14,12 +14,11 @@ type Api struct {
 
 func (a Api) Song() revel.Result {
 	actualPin, _ := strconv.Atoi(a.Session["pin"])
-	uuid := a.Params.Get("uuid")
-
-	if actualPin != revel.Config.IntDefault("nottify.pin_code", 55555) {
+	if !nottify.CheckPin(actualPin) {
 		return a.Redirect(App.Index)
 	}
 
+	uuid := a.Params.Get("uuid")
 	nott := nottify.LoadConnection()
 
 	filename := nott.GetFilename(uuid)
@@ -32,14 +31,39 @@ func (a Api) Song() revel.Result {
 	return a.RenderFile(file, "inline")
 }
 
-func (a Api) SongMeta() revel.Result {
+func (a Api) SongList() revel.Result {
 	actualPin, _ := strconv.Atoi(a.Session["pin"])
-	uuid := a.Params.Get("uuid")
-
-	if actualPin != revel.Config.IntDefault("nottify.pin_code", 55555) {
+	if !nottify.CheckPin(actualPin) {
 		return a.Redirect(App.Index)
 	}
 
+	limit, err := strconv.Atoi(a.Params.Get("limit"))
+	if err != nil || limit < 1 {
+		limit = 10
+	}
+
+	artist := a.Params.Get("artist")
+	title := a.Params.Get("title")
+	album := a.Params.Get("album")
+
+	nott := nottify.LoadConnection()
+	songs := nott.LoadRandom(limit)
+
+	_ = artist
+	_ = title
+	_ = album
+	_ = songs
+
+	return a.RenderJson(songs)
+}
+
+func (a Api) SongMeta() revel.Result {
+	actualPin, _ := strconv.Atoi(a.Session["pin"])
+	if !nottify.CheckPin(actualPin) {
+		return a.Redirect(App.Index)
+	}
+
+	uuid := a.Params.Get("uuid")
 	nott := nottify.LoadConnection()
 
 	details := nott.GetSongMeta(uuid)

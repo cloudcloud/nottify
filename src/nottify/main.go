@@ -90,6 +90,16 @@ func Build(conf *revel.MergedConfig, db *sqlite3.Conn) *Nottify {
 	return m
 }
 
+func CheckPin(pin int) bool {
+	check := revel.Config.IntDefault("nottify.pin_code", 55555)
+
+	if check != pin {
+		return false
+	}
+
+	return true
+}
+
 func LoadConnection() *Nottify {
 	gopath := build.Default.GOPATH
 	revel.ConfPaths = []string{path.Join(gopath, "src/github.com/cloudcloud/nottify/src/conf")}
@@ -113,19 +123,18 @@ func LoadConnection() *Nottify {
 	return m
 }
 
-func (n *Nottify) LoadRandom(limit int) map[int]sqlite3.RowMap {
-	result := make(map[int]sqlite3.RowMap)
+func (n *Nottify) LoadRandom(limit int) map[string]sqlite3.RowMap {
+	result := make(map[string]sqlite3.RowMap)
 	count := 0
 	sql := "select * from song order by random() limit " + strconv.Itoa(limit) + ";"
 
 	for s, e := database.Query(sql); e == nil; e = s.Next() {
+		song := new(Song)
 		row := make(sqlite3.RowMap)
 		s.Scan(row)
 
-		row["artist_seo"] = makeSeo(fmt.Sprintf("%s", row["artist"]))
-		row["title_seo"] = makeSeo(fmt.Sprintf("%s", row["title"]))
+		result[strconv.Itoa(count)] = song.LoadFromResponse(row).GetMap()
 
-		result[count] = row
 		count += 1
 	}
 
