@@ -91,3 +91,37 @@ func (oSong Song) ProcessSong(file os.FileInfo) string {
 
 	return ""
 }
+
+func (o Song) LoadFromResponse(r sqlite3.RowMap) *Song {
+	o.id = fmt.Sprintf("%v", r["id"])
+	o.title = fmt.Sprintf("%v", r["title"])
+	o.artist = fmt.Sprintf("%v", r["artist"])
+	o.album = fmt.Sprintf("%v", r["album"])
+	o.length, _ = strconv.Atoi(fmt.Sprintf("%v", r["length"]))
+	o.genre = fmt.Sprintf("%v", r["genre"])
+	o.track, _ = strconv.Atoi(fmt.Sprintf("%v", r["track"]))
+	o.year, _ = strconv.Atoi(fmt.Sprintf("%v", r["year"]))
+	o.filename = fmt.Sprintf("%v", r["filename"])
+	o.filesize, _ = strconv.Atoi(fmt.Sprintf("%v", r["filesize"]))
+	o.comment = fmt.Sprintf("%v", r["comment"])
+
+	return &o
+}
+
+func (o Song) GetMap() sqlite3.RowMap {
+	r := make(sqlite3.RowMap)
+
+	r["id"] = o.id
+	r["title"] = o.title
+	r["artist"] = o.artist
+	r["album"] = o.album
+	r["length"] = o.length
+	r["genre"] = o.genre
+	r["track"] = o.track
+	r["year"] = o.year
+	r["filename"] = o.filename
+	r["filesize"] = o.filesize
+	r["comment"] = o.comment
+
+	return r
+}

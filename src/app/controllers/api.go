@@ -31,3 +31,17 @@ func (a Api) Song() revel.Result {
 
 	return a.RenderFile(file, "inline")
 }
+
+func (a Api) SongMeta() revel.Result {
+	actualPin, _ := strconv.Atoi(a.Session["pin"])
+	uuid := a.Params.Get("uuid")
+
+	if actualPin != revel.Config.IntDefault("nottify.pin_code", 55555) {
+		return a.Redirect(App.Index)
+	}
+
+	nott := nottify.LoadConnection()
+
+	details := nott.GetSongMeta(uuid)
+	return a.RenderJson(details.GetMap())
+}

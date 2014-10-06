@@ -147,6 +147,21 @@ func (n *Nottify) GetFilename(uuid string) string {
 	return filename
 }
 
+func (n *Nottify) GetSongMeta(uuid string) *Song {
+	song := new(Song)
+	sql := "select * from song where id=$uuid"
+	args := sqlite3.NamedArgs{"$uuid": uuid}
+
+	for s, e := database.Query(sql, args); e == nil; e = s.Next() {
+		row := make(sqlite3.RowMap)
+		s.Scan(row)
+
+		song = song.LoadFromResponse(row)
+	}
+
+	return song
+}
+
 func makeSeo(s string) string {
 	reg, _ := regexp.Compile("[^A-Za-z0-9]+")
 	s = strings.ToLower(reg.ReplaceAllString(s, "-"))

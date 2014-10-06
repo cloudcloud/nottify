@@ -23,7 +23,8 @@ func (c Nottify) Home() revel.Result {
 		return c.Redirect(App.Index)
 	}
 
-	//nott := nottify.LoadConnection()
+	// push this back to the ajax
+	// nott := nottify.LoadConnection()
 
 	return c.Render()
 }
