@@ -80,6 +80,8 @@ $(document).ready(function() {
                 if (typeof player == "object") {
                     player.pause();
                     player.currentTime = 0;
+
+                    togglePlay('pause');
                 }
             },
 
