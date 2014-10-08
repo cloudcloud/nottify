@@ -12,7 +12,7 @@ Handlebars.registerHelper("debug", function(optionalValue) {
 
 $(document).ready(function() {
     var n = (function(j) {
-        var np = undefined, pl = undefined, state = 0, $ = j,
+        var nowplaying = undefined, playlist = undefined, state = 0, $ = j, player = undefined,
             parse = function(u) {
                 var p = document.createElement('a'), h = undefined, o = {};
                 p.href = u;
@@ -34,11 +34,30 @@ $(document).ready(function() {
 
                 var template = Handlebars.compile(htmlContent);
                 $(container).html(template(dataContent));
+            }, togglePlay = function(which) {
+                var b = $('#pause-button :first-child');
+                if (which === "play") {
+                    b.removeClass('glyphicon-play').addClass('glyphicon-pause');
+                } else {
+                    b.removeClass('glyphicon-pause').addClass('glyphicon-play');
+                }
             };
 
         return {
             play: function(uuid) {
-                console.log('play '+uuid, state);
+                if (typeof player != "object") {
+                    player = new Audio();
+                } else {
+                    this.stop();
+                    togglePlay('pause');
+                }
+
+                player.setAttribute("src", "/api/song/" + uuid);
+                player.load();
+                player.play();
+
+                nowplaying = uuid;
+                togglePlay('play');
             },
 
             previous: function() {
@@ -46,11 +65,22 @@ $(document).ready(function() {
             },
 
             pause: function() {
-                console.log('pause');
+                if (typeof player == "object") {
+                    if (player.paused) {
+                        player.play();
+                        togglePlay('play');
+                    } else {
+                        player.pause();
+                        togglePlay('pause');
+                    }
+                }
             },
 
             stop: function() {
-                console.log('stop');
+                if (typeof player == "object") {
+                    player.pause();
+                    player.currentTime = 0;
+                }
             },
 
             next: function() {
