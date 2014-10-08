@@ -67,5 +67,5 @@ func (a Api) SongMeta() revel.Result {
 	nott := nottify.LoadConnection()
 
 	details := nott.GetSongMeta(uuid)
-	return a.RenderJson(details.GetMap())
+	return a.RenderJson(details)
 }

@@ -35,8 +35,8 @@ func (n *Nottify) loadFile(path string, file os.FileInfo) {
 	uuid := n.genUUID(file)
 
 	s := new(Song)
-	s.filename = path
-	s.id = uuid
+	s.Filename = path
+	s.Id = uuid
 
 	s = s.LoadDatabase(database, uuid)
 	if s == nil {
@@ -156,7 +156,7 @@ func (n *Nottify) GetFilename(uuid string) string {
 	return filename
 }
 
-func (n *Nottify) GetSongMeta(uuid string) *Song {
+func (n *Nottify) GetSongMeta(uuid string) sqlite3.RowMap {
 	song := new(Song)
 	sql := "select * from song where id=$uuid"
 	args := sqlite3.NamedArgs{"$uuid": uuid}
@@ -168,7 +168,7 @@ func (n *Nottify) GetSongMeta(uuid string) *Song {
 		song = song.LoadFromResponse(row)
 	}
 
-	return song
+	return song.GetMap()
 }
 
 func makeSeo(s string) string {
