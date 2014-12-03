@@ -7,6 +7,8 @@ GET /public/*filepath Static.Serve("public")
 GET /api/song/:uuid/meta Api.SongMeta
 GET /api/song/:uuid Api.Song
 
+GET /api/artist/:artist Api.Artist
+
 GET /api/songs Api.SongList
 
 * /:controller/:action :controller.:action

@@ -12,6 +12,20 @@ type Api struct {
 	*revel.Controller
 }
 
+func (a Api) Artist() revel.Result {
+	actualPin, _ := strconv.Atoi(a.Session["pin"])
+	if !nottify.CheckPin(actualPin) {
+		return a.Redirect(App.Index)
+	}
+
+	artist := a.Params.Get("artist")
+	nott := nottify.LoadConnection()
+
+	songs := nott.LoadFromArtist(artist)
+
+	return a.RenderJson(songs)
+}
+
 func (a Api) Song() revel.Result {
 	actualPin, _ := strconv.Atoi(a.Session["pin"])
 	if !nottify.CheckPin(actualPin) {

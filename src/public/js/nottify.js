@@ -12,7 +12,8 @@ Handlebars.registerHelper("debug", function(optionalValue) {
 
 $(document).ready(function() {
     var n = (function(j) {
-        var nowplaying = undefined, playlist = undefined, state = 0, $ = j, player = undefined,
+        var playlist = undefined, state = 0, $ = j,
+            player = undefined, songlist = [], playposition = 0, repeat = 0, shuffle = 0,
             parse = function(u) {
                 var p = document.createElement('a'), h = undefined, o = {};
                 p.href = u;
@@ -41,27 +42,55 @@ $(document).ready(function() {
                 } else {
                     b.removeClass('glyphicon-pause').addClass('glyphicon-play');
                 }
+            }, nowplaying = function(uuid) {
+                // highlight the item in the list
+                $('#main-body .song').removeClass('playing');
+                $('#song-'+uuid).addClass('playing');
+
+                // update the text box
             };
 
         return {
             play: function(uuid) {
+                // construct the audio element itself
                 if (typeof player != "object") {
                     player = new Audio();
                 } else {
+                    // clearing out an existing song
                     this.stop();
                     togglePlay('pause');
                 }
 
+                // set up the player
                 player.setAttribute("src", "/api/song/" + uuid);
                 player.load();
                 player.play();
 
-                nowplaying = uuid;
+                // set the currently playing track
+                nowplaying(uuid);
+                // add the current song to the queue
+                songlist.push(uuid);
+                // bump the position within the queue
+                playposition++;
+
+                // update the play button
                 togglePlay('play');
+
+                // first time through, allow
+                $('#pause-button').removeClass('disabled');
+                $('#stop-button').removeClass('disabled');
+
+                // check for the other buttons
+                if (songlist.length > 1) {
+                    $('#previous-button').removeClass('disabled');
+                }
             },
 
             previous: function() {
-                console.log('previous');
+                //
+                // take frm the current place in the list
+                //  then move backwards if there's another one
+                //  or simply begin the song again
             },
 
             pause: function() {
@@ -86,7 +115,9 @@ $(document).ready(function() {
             },
 
             next: function() {
-                console.log('next');
+                // similar to the previous
+                // but with the exception of moving to the next song in the
+                //  list
             },
 
             queue: function(uuid) {
@@ -107,6 +138,44 @@ $(document).ready(function() {
 
             search: function(items) {
                 console.log('searching '+items);
+            },
+
+            artist: function(artist) {
+                var template = 'basic-artist-view', url = '/api/artist/'+artist;
+                load(template, url, $('#main-body'));
+            },
+
+            shuffle: function() {
+                var a = $('#shuffle-button'), b = $('#shuffle-button :first-child');
+                if (shuffle === 0) {
+                    shuffle = 1;
+                    a.attr('title', 'Shuffle!');
+                    b.removeClass('glyphicon-arrow-right').addClass('glyphicon-random');
+                } else {
+                    shuffle = 0;
+                    a.attr('title', 'No Shuffle');
+                    b.removeClass('glyphicon-random').addClass('glyphicon-arrow-right');
+                }
+            },
+
+            repeat: function() {
+                var a = $('#repeat-button'), b = $('#repeat-button :first-child');
+                if (repeat === 0) {
+                    // change from through to repeat single
+                    repeat = 1;
+                    a.attr('title', 'Repeat Song');
+                    b.removeClass('glyphicon-play-circle').addClass('glyphicon-repeat');
+                } else if (repeat === 1) {
+                    // change from repeat single to repeat all
+                    repeat = 2;
+                    a.attr('title', 'Repeat List');
+                    b.removeClass('glyphicon-repeat').addClass('glyphicon-refresh');
+                } else {
+                    // change back to through
+                    repeat = 0;
+                    a.attr('title', 'No Repeat');
+                    b.removeClass('glyphicon-refresh').addClass('glyphicon-play-circle');
+                }
             },
 
             home: function() {
@@ -140,6 +209,11 @@ $(document).ready(function() {
                 $(window).unload(self, function(e) {
                     var self = e.data, url = e.currentTarget.location;
                     self.unload(self, e);
+                });
+
+                $(document).on({
+                    ajaxStart: function() { $('body').addClass('loading'); },
+                    ajaxStop: function() { $('body').removeClass('loading'); }
                 });
             }
         }

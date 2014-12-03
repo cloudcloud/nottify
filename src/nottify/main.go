@@ -13,6 +13,8 @@ import (
 	"go/build"
 
 	"code.google.com/p/go-sqlite/go1/sqlite3"
+	"github.com/cloudcloud/nottify/src/nottify/artist"
+	"github.com/cloudcloud/nottify/src/nottify/song"
 	"github.com/revel/revel"
 )
 
@@ -22,7 +24,7 @@ var (
 )
 
 type Nottify struct {
-	songList []Song
+	songList []song.Song
 }
 
 func (n *Nottify) LoadDir(directory string) {
@@ -33,8 +35,10 @@ func (n *Nottify) LoadDir(directory string) {
 
 func (n *Nottify) loadFile(path string, file os.FileInfo) {
 	uuid := n.genUUID(file)
+	_ = uuid
 
-	s := new(Song)
+	/* a revisit is a must
+	s := song.New()
 	s.Filename = path
 	s.Id = uuid
 
@@ -51,6 +55,7 @@ func (n *Nottify) loadFile(path string, file os.FileInfo) {
 	}
 
 	n.songList = append(n.songList, *s)
+	*/
 }
 
 func (n *Nottify) walk(path string, f os.FileInfo, err error) error {
@@ -123,22 +128,28 @@ func LoadConnection() *Nottify {
 	return m
 }
 
-func (n *Nottify) LoadRandom(limit int) map[string]sqlite3.RowMap {
-	result := make(map[string]sqlite3.RowMap)
+func (n *Nottify) LoadRandom(limit int) map[string]song.Song {
+	result := make(map[string]song.Song)
 	count := 0
 	sql := "select * from song order by random() limit " + strconv.Itoa(limit) + ";"
 
 	for s, e := database.Query(sql); e == nil; e = s.Next() {
-		song := new(Song)
 		row := make(sqlite3.RowMap)
 		s.Scan(row)
 
-		result[strconv.Itoa(count)] = song.LoadFromResponse(row).GetMap()
-
+		song := song.New(database, row)
+		result[strconv.Itoa(count)] = *song
 		count += 1
 	}
 
 	return result
+}
+
+func (n *Nottify) LoadFromArtist(a string) *artist.Artist {
+	art := artist.New(a)
+	art.Load(database)
+
+	return art
 }
 
 func (n *Nottify) GetFilename(uuid string) string {
@@ -161,14 +172,15 @@ func (n *Nottify) GetSongMeta(uuid string) sqlite3.RowMap {
 	sql := "select * from song where id=$uuid"
 	args := sqlite3.NamedArgs{"$uuid": uuid}
 
+	_ = song
 	for s, e := database.Query(sql, args); e == nil; e = s.Next() {
 		row := make(sqlite3.RowMap)
 		s.Scan(row)
 
-		song = song.LoadFromResponse(row)
+		//song = song.LoadFromResponse(row)
 	}
 
-	return song.GetMap()
+	return sqlite3.RowMap{}
 }
 
 func makeSeo(s string) string {
@@ -176,4 +188,13 @@ func makeSeo(s string) string {
 	s = strings.ToLower(reg.ReplaceAllString(s, "-"))
 
 	return s
+}
+
+func contains(e []string, c string) bool {
+	for _, s := range e {
+		if s == c {
+			return true
+		}
+	}
+	return false
 }
