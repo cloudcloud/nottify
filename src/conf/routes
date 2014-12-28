@@ -4,12 +4,14 @@ GET /favicon.ico 404
 
 GET /public/*filepath Static.Serve("public")
 
+GET /api/artist/:artist Api.Artist
+
 GET /api/song/:uuid/meta Api.SongMeta
 GET /api/song/:uuid Api.Song
 
-GET /api/artist/:artist Api.Artist
-
 GET /api/songs Api.SongList
+
+* /n Nottify.Home
 
 * /:controller/:action :controller.:action
 
