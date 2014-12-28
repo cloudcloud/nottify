@@ -167,20 +167,19 @@ func (n *Nottify) GetFilename(uuid string) string {
 	return filename
 }
 
-func (n *Nottify) GetSongMeta(uuid string) sqlite3.RowMap {
-	song := new(Song)
+func (n *Nottify) GetSongMeta(uuid string) *song.Song {
+	ind := new(song.Song)
 	sql := "select * from song where id=$uuid"
 	args := sqlite3.NamedArgs{"$uuid": uuid}
 
-	_ = song
 	for s, e := database.Query(sql, args); e == nil; e = s.Next() {
 		row := make(sqlite3.RowMap)
 		s.Scan(row)
 
-		//song = song.LoadFromResponse(row)
+		ind = song.New(database, row)
 	}
 
-	return sqlite3.RowMap{}
+	return ind
 }
 
 func makeSeo(s string) string {
