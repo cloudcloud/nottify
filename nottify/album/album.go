@@ -1,6 +1,6 @@
 package album
 
-import "github.com/cloudcloud/nottify/src/nottify/song"
+import "github.com/cloudcloud/nottify/nottify/song"
 
 type Album struct {
 	Album  string      `json:"album"`

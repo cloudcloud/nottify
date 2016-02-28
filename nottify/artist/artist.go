@@ -1,13 +1,8 @@
 package artist
 
 import (
-	"code.google.com/p/go-sqlite/go1/sqlite3"
-	"github.com/cloudcloud/nottify/src/nottify/album"
-	"github.com/cloudcloud/nottify/src/nottify/song"
-)
-
-var (
-	db *sqlite3.Conn
+	"github.com/cloudcloud/nottify/nottify/album"
+	"github.com/cloudcloud/nottify/nottify/song"
 )
 
 type Artist struct {
@@ -22,18 +17,9 @@ func New(artist string) *Artist {
 	return a
 }
 
-func (a *Artist) Load(d *sqlite3.Conn) {
-	db = d
+func (a *Artist) Load() {
 	sql := "select * from song where artist=? order by filename asc"
-
-	for s, e := db.Query(sql, a.Artist); e == nil; e = s.Next() {
-		row := make(sqlite3.RowMap)
-		s.Scan(row)
-
-		song := song.New(db, row)
-
-		a.addSong(song)
-	}
+	_ = sql
 }
 
 func (a *Artist) addSong(s *song.Song) {
