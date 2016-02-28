@@ -33,9 +33,17 @@ var commands = []*Command{
 	cmdIngest,
 	cmdInit,
 	cmdSearch,
+	cmdStart,
+	cmdStop,
 }
 
-func main() {
+func New() *Command {
+	c := new(Command)
+
+	return c
+}
+
+func (cmd *Command) Process() *Command {
 	flag.Usage = func() { usage(1) }
 	flag.Parse()
 	args := flag.Args()
@@ -47,7 +55,7 @@ func main() {
 			for _, cmd := range commands {
 				if cmd.Name() == args[1] {
 					tmpl(os.Stdout, helpTemplate, cmd)
-					return
+					return nil
 				}
 			}
 		}
@@ -66,11 +74,12 @@ func main() {
 	for _, cmd := range commands {
 		if cmd.Name() == args[0] {
 			cmd.Run(args[1:])
-			return
+			return nil
 		}
 	}
 
 	errorf("Unknown command [%q]\nRun 'nottify help' for usage.\n", args[0])
+	return nil
 }
 
 func errorf(format string, args ...interface{}) {
