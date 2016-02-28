@@ -1,4 +1,4 @@
-package main
+package cli
 
 import "fmt"
 
@@ -21,7 +21,7 @@ func init() {
 var (
 	basePath string
 	pinCode  int
-	mysqlDsn string
+	pqDsn    string
 )
 
 func configRun(args []string) {
@@ -32,8 +32,6 @@ func configRun(args []string) {
 	if len(args) > 3 {
 		errorf("Too many arguments provided.\nPlease run 'nottify help config'\n")
 	}
-
-	// revel.Config.IntDefault("nottify.pin_code", 55555)
 
 	if args[0] == "get" {
 		fmt.Println("Get the variable")

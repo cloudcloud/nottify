@@ -1,4 +1,4 @@
-package main
+package cli
 
 import (
 	"flag"
@@ -28,10 +28,11 @@ func (cmd *Command) Name() string {
 }
 
 var commands = []*Command{
+	cmdClear,
 	cmdConfig,
 	cmdIngest,
-	//cmdSearch,
-	//cmdClear,
+	cmdInit,
+	cmdSearch,
 }
 
 func main() {
@@ -42,8 +43,7 @@ func main() {
 	if len(args) < 1 || args[0] == "help" {
 		if len(args) == 1 {
 			usage(0)
-		}
-		if len(args) > 1 {
+		} else if len(args) > 1 {
 			for _, cmd := range commands {
 				if cmd.Name() == args[1] {
 					tmpl(os.Stdout, helpTemplate, cmd)
@@ -70,7 +70,7 @@ func main() {
 		}
 	}
 
-	errorf("unknown command [%q]\nRun 'nottify help' for usage.\n", args[0])
+	errorf("Unknown command [%q]\nRun 'nottify help' for usage.\n", args[0])
 }
 
 func errorf(format string, args ...interface{}) {

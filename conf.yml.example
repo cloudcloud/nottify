@@ -1,0 +1,19 @@
+--- # dir
+- file:
+  dirs:
+    - "/home/allan/music"
+    - "/media/music"
+
+--- # web
+- web:
+  hostname: "localhost"
+  port: 8080
+
+--- # database
+- database:
+  hostname: "localhost"
+  user: "nott"
+  password: ""
+  database: "nottify"
+  table_prefix: ""
+

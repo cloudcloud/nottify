@@ -2,21 +2,32 @@
 Nottify is a self-managed replacement for Spotify. For those with many media files, and multiple devices, each without mass storage capabilities, this provides a way to stream on demand.
 
 ##requirements
+Using ``go get`` all requirements are automatically loaded.
+
 ```
-revel/cmd
-revel/revel
-code.google.com/p/go-sqlite/go1/sqlite3
+github.com/cloudcloud/go-id3
+github.com/go-martini/martini
+github.com/lib/pq
 ```
 
 ##usage
-Initial usage requires processing of base content, after setting up configuration requirements.
-A local sqlite3 database is required, with the DSN being set in the local configuration. This configuration is used all through the application.
-
-To complete the ingestion of files, ready to be used for the web interface, the ``ingest`` command should be run.
-On the initial run, this command will also set up the necessary tables as is required.
+Initial usage requires processing of base content, after setting up configuration requirements. This
+initial process will also run-through base configuration set, and instantiation of the database. Of
+course, all configuration can be modified at a later date.
 
 ###configuration
-* ``base_path`` The initial path for media files.
-* ``pin_code`` The login PIN for actual usage.
-* ``sqlite_path`` Full absolute path for the sqlite db file.
+
+###tests
+
+##commands
+
+###init
+
+###config
+
+###ingest
+
+###search
+
+###clear
 
