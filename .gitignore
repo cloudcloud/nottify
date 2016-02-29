@@ -21,3 +21,5 @@ _testmain.go
 *.test
 *.prof
 
+conf.yml
+
