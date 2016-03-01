@@ -37,7 +37,7 @@ func NewConfig() *Config {
 	c := new(Config)
 
 	if len(filename) < 1 {
-		filename, err = discoverConfigFile()
+		filename, err = c.discoverConfigFile()
 		if err != nil {
 			// this needs elegance, pls
 			panic(err)
@@ -199,15 +199,22 @@ func (c *Config) push() (string, error) {
 	return fmt.Sprintf("Written to file %s\n", filename), nil
 }
 
-func discoverConfigFile() (string, error) {
-	// do some dir traversal
+// GetBaseDir will provide the absolute path to Nottify
+func (c *Config) GetBaseDir() string {
 	gopath := build.Default.GOPATH
-	filename = path.Join(gopath, "src/github.com/cloudcloud/nottify/conf.yml")
+
+	return path.Join(gopath, "src/github.com/cloudcloud/nottify")
+}
+
+func (c *Config) discoverConfigFile() (string, error) {
+	// do some dir traversal
+	filename = path.Join(c.GetBaseDir(), "conf.yml")
 	tmpFile := ""
 
 	if _, err := os.Stat(filename); err != nil {
+		panic(err)
 		// grab the example and copy it across
-		tmpFile = filename + ".example"
+		tmpFile = fmt.Sprintf("%s.example", filename)
 		if _, err := os.Stat(tmpFile); err != nil {
 			return "", errors.New("Unable to discover config.yml file")
 		}
