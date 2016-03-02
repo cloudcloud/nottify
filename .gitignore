@@ -22,4 +22,5 @@ _testmain.go
 *.prof
 
 conf.yml
+nott
 
