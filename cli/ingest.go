@@ -1,5 +1,11 @@
 package cli
 
+import (
+	"fmt"
+
+	"github.com/cloudcloud/nottify/nottify"
+)
+
 var cmdIngest = &Command{
 	UsageLine: "ingest",
 	Short:     "Complete an ingestion of Media",
@@ -16,5 +22,13 @@ func init() {
 }
 
 func ingestRun(args []string) {
-	// unimplemented so far
+	c := nottify.NewConfig()
+	n := nottify.New(c)
+
+	r, err := n.Ingest()
+	if err != nil {
+		panic(err)
+	}
+
+	fmt.Println(r)
 }

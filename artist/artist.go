@@ -1,8 +1,8 @@
 package artist
 
 import (
-	"github.com/cloudcloud/nottify/nottify/album"
-	"github.com/cloudcloud/nottify/nottify/song"
+	"github.com/cloudcloud/nottify/album"
+	"github.com/cloudcloud/nottify/song"
 )
 
 type Artist struct {

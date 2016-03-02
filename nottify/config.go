@@ -61,6 +61,13 @@ func NewConfig() *Config {
 	return c
 }
 
+// GetBaseDir will provide the absolute path to Nottify
+func (c *Config) GetBaseDir() string {
+	gopath := build.Default.GOPATH
+
+	return path.Join(gopath, "src/github.com/cloudcloud/nottify")
+}
+
 // Get will retrieve a value from the Configuration
 func (c *Config) Get(s []string) (string, error) {
 	// first section
@@ -197,13 +204,6 @@ func (c *Config) push() (string, error) {
 	// push back to the file
 	err = ioutil.WriteFile(filename, y, 0755)
 	return fmt.Sprintf("Written to file %s\n", filename), nil
-}
-
-// GetBaseDir will provide the absolute path to Nottify
-func (c *Config) GetBaseDir() string {
-	gopath := build.Default.GOPATH
-
-	return path.Join(gopath, "src/github.com/cloudcloud/nottify")
 }
 
 func (c *Config) discoverConfigFile() (string, error) {

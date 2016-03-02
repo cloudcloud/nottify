@@ -13,6 +13,11 @@ var cmdInit = &Command{
 	UsageLine: "init",
 	Short:     "Interactive initialisation",
 	Long: `
+Init completes the base setup, from database to web. Once the database sets are added, the schema can then be pushed.
+Prompts are provided for each series of sets.
+
+For example:
+	nottify init
 `,
 }
 
