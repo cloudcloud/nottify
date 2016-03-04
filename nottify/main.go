@@ -12,6 +12,7 @@ import (
 type Nottify struct {
 	songList []song.Song
 	config   *Config
+	db       *Db
 }
 
 type ChanMsg struct {
@@ -22,6 +23,7 @@ type ChanMsg struct {
 var (
 	mainChannel chan string
 	fileProc    chan ChanMsg
+	songCount   int
 )
 
 // New will instantiate a Nottify for general work.
@@ -50,15 +52,16 @@ func (n *Nottify) Ingest() (string, error) {
 		for {
 			j, more := <-fileProc
 			if !more {
-				mainChannel <- "Finished Processing"
+				mainChannel <- fmt.Sprintf("\nFinished Processing. Total of [%v] tracks ingested.\n", songCount)
 			} else {
 				song := song.New()
 
 				err = song.FromFile(j.info, j.file)
 				if err != nil {
-					// pad out
+					// pad out - these could just be already known tracks
 				} else {
 					// increment result set
+					songCount++
 				}
 			}
 		}

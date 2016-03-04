@@ -40,12 +40,21 @@ func (s *Song) FromFile(f os.FileInfo, filename string) error {
 	}
 
 	i = i.Process()
-	fmt.Printf("%+v\n", i)
+	fmt.Printf("%s - %s [%s] (%v)\n", i.GetArtist(), i.GetTitle(), i.GetAlbum(), i.GetTrackNumber())
 
-	// need to add some getters on i
-	for _, v := range i.ID3V2.Items {
-		fmt.Printf("%+v\n", v)
-	}
+	s.Artist = i.GetArtist()
+	s.Title = i.GetTitle()
+	s.Album = i.GetAlbum()
+	s.Length = i.GetLength()
+	s.Genre = i.GetGenre()
+	s.Track = i.GetTrackNumber()
+	s.Comment = i.GetComment()
+	s.Year = i.GetReleaseYear()
 
 	return nil
+}
+
+// LoadByFilename will retrieve the song from the database if it exists.
+func (s *Song) LoadByFilename(filename string) (*Song, error) {
+	return nil, nil
 }

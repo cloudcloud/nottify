@@ -14,10 +14,10 @@ import (
 )
 
 type Db struct {
-	Hostname string
-	Username string
-	Database string
-	Password string
+	hostname string
+	username string
+	database string
+	password string
 	conn     *sql.DB
 	conf     *Config
 }
@@ -26,10 +26,10 @@ type Db struct {
 func NewDb(c *Config) *Db {
 	d := new(Db)
 
-	d.Hostname, _ = c.Get([]string{"database", "hostname"})
-	d.Username, _ = c.Get([]string{"database", "user"})
-	d.Password, _ = c.Get([]string{"database", "password"})
-	d.Database, _ = c.Get([]string{"database", "database"})
+	d.hostname, _ = c.Get([]string{"database", "hostname"})
+	d.username, _ = c.Get([]string{"database", "user"})
+	d.password, _ = c.Get([]string{"database", "password"})
+	d.database, _ = c.Get([]string{"database", "database"})
 
 	if err := d.Connect(); err != nil {
 		// needs elegance
@@ -41,7 +41,7 @@ func NewDb(c *Config) *Db {
 
 // Connect will open the connection to the server
 func (d *Db) Connect() error {
-	d.conn, err = sql.Open("postgres", fmt.Sprintf("user='%s' dbname='%s' password='%s' host='%s' sslmode=require", d.Username, d.Database, d.Password, d.Hostname))
+	d.conn, err = sql.Open("postgres", fmt.Sprintf("user='%s' dbname='%s' password='%s' host='%s' sslmode=require", d.username, d.database, d.password, d.hostname))
 	if err != nil {
 		return err
 	}

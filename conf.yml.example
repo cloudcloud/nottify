@@ -1,4 +1,4 @@
-dirs: [/home/allan/music, /media/music, /opt/media/, /home/allan/]
+dirs: [/media/music, /opt/media/, /home/allan/Music/]
 hostname: localhost
 port: 8080
 database:
