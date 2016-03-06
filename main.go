@@ -1,3 +1,5 @@
+// Package main provides the executable for Nottify. This includes the command line interface, and
+// web component management commands.
 package main
 
 import (

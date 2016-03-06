@@ -1,5 +1,8 @@
 #nottify
-Nottify is a self-managed replacement for Spotify. For those with many media files, and multiple devices, each without mass storage capabilities, this provides a way to stream on demand.
+[![GoDoc](https://godoc.org/github.com/cloudcloud/nottify?status.svg)](https://godoc.org/github.com/cloudcloud/nottify)
+[![Circle CI](https://circleci.com/gh/cloudcloud/nottify.svg?style=svg)](https://circleci.com/gh/cloudcloud/nottify)
+
+Nottify is a self-managed music streaming service. For those with many media files, and multiple devices, each without mass storage capabilities, this provides a way to stream on demand. A command line interface to easily configure and script the installation opens the way to use the clean and simple web interface.
 
 ##requirements
 Using ``go get`` all requirements are automatically loaded.
@@ -47,4 +50,3 @@ is also provided through the web, the CLI also provides the capability.
 When the file system changes heavily, it may be useful to clear existing data and allow for ``ingest``
 to perform fresh analysis. This is also useful for emptying cached content, when manual changes are
 being made or configurations updated.
-

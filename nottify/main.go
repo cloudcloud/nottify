@@ -1,3 +1,4 @@
+// Package nottify provides the base interface to the main Nottify shared functionality.
 package nottify
 
 import (
@@ -9,12 +10,14 @@ import (
 	"github.com/cloudcloud/nottify/song"
 )
 
+// Nottify provides the shared object state.
 type Nottify struct {
 	songList []song.Song
 	config   *Config
 	db       *Db
 }
 
+// ChanMsg defines details about found files during ingestion.
 type ChanMsg struct {
 	file string
 	info os.FileInfo

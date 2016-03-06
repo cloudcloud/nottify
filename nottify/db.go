@@ -10,9 +10,11 @@ import (
 	"regexp"
 	"strings"
 
+	// bring in the postgres library
 	_ "github.com/lib/pq"
 )
 
+// Db provides details and connection information for the Database.
 type Db struct {
 	hostname string
 	username string

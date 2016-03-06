@@ -212,7 +212,6 @@ func (c *Config) discoverConfigFile() (string, error) {
 	tmpFile := ""
 
 	if _, err := os.Stat(filename); err != nil {
-		panic(err)
 		// grab the example and copy it across
 		tmpFile = fmt.Sprintf("%s.example", filename)
 		if _, err := os.Stat(tmpFile); err != nil {
