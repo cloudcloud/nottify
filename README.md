@@ -10,7 +10,7 @@ Using ``go get`` all requirements are automatically loaded.
 ```
 github.com/cloudcloud/go-id3
 github.com/go-martini/martini
-github.com/go-yaml/yaml
+gopkg.in/yaml.v2
 github.com/lib/pq
 ```
 
