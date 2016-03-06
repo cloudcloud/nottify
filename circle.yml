@@ -6,8 +6,9 @@ machine:
 
 dependencies:
   pre:
-    - go get github.com/cloudcloud/go-id3/
+    - go get github.com/cloudcloud/go-id3/...
     - go get github.com/lib/pq
+    - go get gopkg.in/yaml.v2
     - go get github.com/go-yaml/yaml
     - go get github.com/go-martini/martini
   override:
