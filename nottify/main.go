@@ -87,6 +87,7 @@ func (n *Nottify) walk(path string, f os.FileInfo, err error) error {
 		fmt.Println(err.Error())
 		return nil
 	}
+
 	if f.IsDir() {
 		return nil
 	}

@@ -3,17 +3,13 @@ machine:
     Australia/Sydney
   environment:
     CIRCLE_ENV: test
+  services:
+    - docker
 
 dependencies:
   pre:
-    - go get github.com/cloudcloud/go-id3/...
-    - go get github.com/lib/pq
-    - go get gopkg.in/yaml.v2
-    - go get github.com/go-martini/martini
-  override:
-    - go get ./...
     - CGO_ENABLED=0 GOOS=linux go build -a -tags netgo -ldflags '-w' -o nott .
 
 general:
   artifacts:
-    - "nott" # the built executable
+    - "./nott" # the built executable

@@ -1,7 +1,9 @@
+// Package album provides the interactions for all Album related data. Retrieval, Storage, and Seeking.
 package album
 
 import "github.com/cloudcloud/nottify/song"
 
+// Album is the object base upon which data is managed and actions defined.
 type Album struct {
 	Album  string      `json:"album"`
 	Image  string      `json:"image"`
@@ -10,6 +12,7 @@ type Album struct {
 	Artist string      `json:"artist"`
 }
 
+// New will provision a new instance of Album
 func New(artist, album string) *Album {
 	a := new(Album)
 	a.Artist = artist
@@ -20,10 +23,12 @@ func New(artist, album string) *Album {
 	return a
 }
 
+// GetImage simply returns the Image URL of the Album
 func (a *Album) GetImage() string {
 	return a.Image
 }
 
+// AddSong will append a Song to the Album
 func (a *Album) AddSong(s *song.Song) {
 	a.Songs = append(a.Songs[:], *s)
 }

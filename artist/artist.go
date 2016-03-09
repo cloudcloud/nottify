@@ -1,3 +1,4 @@
+// Package artist will give interactions for Artist related queries.
 package artist
 
 import (
@@ -5,21 +6,18 @@ import (
 	"github.com/cloudcloud/nottify/song"
 )
 
+// Artist is the base of the object for the data and methods upon an Artist
 type Artist struct {
 	Artist string        `json:"artist"`
 	Albums []album.Album `json:"albums"`
 }
 
+// New will provision a new instance of the Artist object
 func New(artist string) *Artist {
 	a := new(Artist)
 	a.Artist = artist
 
 	return a
-}
-
-func (a *Artist) Load() {
-	sql := "select * from song where artist=? order by filename asc"
-	_ = sql
 }
 
 func (a *Artist) addSong(s *song.Song) {

@@ -19,4 +19,6 @@ func clearRun(args []string) {
 	if len(args) == 0 {
 		// could allow for full data emptying
 	}
+
+	//
 }

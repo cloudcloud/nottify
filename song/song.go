@@ -1,3 +1,4 @@
+// Package song gives all methods and data for an individual Song.
 package song
 
 import (
@@ -7,8 +8,9 @@ import (
 	"github.com/cloudcloud/go-id3/id3"
 )
 
+// Song is the data container and method provider for working with a Song.
 type Song struct {
-	Id       string `json:"id"`
+	ID       string `json:"id"`
 	Artist   string `json:"artist"`
 	Title    string `json:"title"`
 	Album    string `json:"album"`

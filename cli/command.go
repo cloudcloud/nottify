@@ -1,3 +1,5 @@
+// Package cli provides all methods for Command Line usage of Nottify. Each individual action point
+// is placed within its own file to enhance readability of source.
 package cli
 
 import (
@@ -9,15 +11,18 @@ import (
 	"text/template"
 )
 
+// LoggedError is a localised wrapper of error
 type LoggedError struct {
 	error
 }
 
+// Command is a generic struct for defining Commands to be made available.
 type Command struct {
 	Run                    func(args []string)
 	UsageLine, Short, Long string
 }
 
+// Name will use the particular Command instance to generate a display name.
 func (cmd *Command) Name() string {
 	name := cmd.UsageLine
 	i := strings.Index(name, " ")
@@ -37,12 +42,14 @@ var commands = []*Command{
 	cmdStop,
 }
 
+// New will begin the Object init for a specific Command.
 func New() *Command {
 	c := new(Command)
 
 	return c
 }
 
+// Process is the runner for handling the full command entered.
 func (cmd *Command) Process() *Command {
 	flag.Usage = func() { usage(1) }
 	flag.Parse()
