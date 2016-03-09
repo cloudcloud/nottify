@@ -9,6 +9,14 @@ machine:
 dependencies:
   pre:
     - CGO_ENABLED=0 GOOS=linux go build -a -tags netgo -ldflags '-w' -o nott .
+  override:
+    - docker build -t cloudcloud/nottify .
+    - docker run -d -p 8080:80 cloudcloud/nottify
+    - sleep 10
+
+test:
+  override:
+    - "curl http://localhost:8080"
 
 general:
   artifacts:
