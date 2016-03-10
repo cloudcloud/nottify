@@ -3,20 +3,21 @@ machine:
     Australia/Sydney
   environment:
     CIRCLE_ENV: test
-  services:
-    - docker
+    IMPORT_PATH: "github.com/$CIRCLE_PROJECT_USERNAME/$CIRCLE_PROJECT_REPONAME"
 
 dependencies:
-  pre:
-    - CGO_ENABLED=0 GOOS=linux go build -a -tags netgo -ldflags '-w' -o nott .
   override:
-    - docker build -t cloudcloud/nottify .
-    - docker run -d -p 8080:80 cloudcloud/nottify
-    - sleep 10
+    - mkdir -p "$GOPATH/src/$IMPORT_PATH"
+    - rsync -azC --delete ./ "$GOPATH/src/$IMPORT_PATH/"
+    - CGO_ENABLED=0 GOOS=linux go build -a -tags netgo -ldflags '-w' -o nott ./...
+    - go install nott
 
 test:
+  pre:
+    - go vet ./...
   override:
     - "curl http://localhost:8080"
+    - go test ./...
 
 general:
   artifacts:
