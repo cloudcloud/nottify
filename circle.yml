@@ -19,7 +19,6 @@ test:
   pre:
     - go vet ./...
   override:
-    - "curl http://localhost:8080"
     - go test ./...
 
 general:
