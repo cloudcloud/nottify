@@ -7,12 +7,13 @@ machine:
 
 dependencies:
   pre:
+    - go get gopkg.in/yaml.v2
+    - go get github.com/lib/pq
     - go get github.com/cloudcloud/go-id3
   override:
     - mkdir -p "$GOPATH/src/$IMPORT_PATH"
     - rsync -azC --delete ./ "$GOPATH/src/$IMPORT_PATH/"
-    - CGO_ENABLED=0 GOOS=linux go build -a -tags netgo -ldflags '-w' -o nott ./...
-    - go install nott
+    - go get github.com/cloudcloud/nottify/...
 
 test:
   pre:
