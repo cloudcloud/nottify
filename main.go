@@ -2,14 +2,46 @@
 // web component management commands.
 package main
 
-import (
-	"github.com/cloudcloud/nottify/cli"
+// default values for incoming variables
+const (
+	debugModeDefault = false
+	formatDefault    = "json"
 )
+
+// variables containing provided cli inputs
+var (
+	debugMode bool
+	format    string
+)
+
+// prime the environment and settings
+func init() {
+	// set up command handlers
+
+	// begin flag definitions
+}
 
 // Essentially, run the CLI
 func main() {
-	c := cli.New()
+	// get some flags happening
+}
 
-	// with the Command, Process it
-	c.Process()
+// Command provides a structure for individual commands to be run
+type Command struct {
+	Usage       string `json:"usage"`
+	Description string `json:"description"`
+	Explanation string `json:"explanation"`
+
+	args []string
+}
+
+// Comm defines behaviours that a Command should exhibit
+type Comm interface {
+	Run() error
+	Init([]string) error
+}
+
+// LoggedError is a known error for internal usage
+type LoggedError struct {
+	error
 }
