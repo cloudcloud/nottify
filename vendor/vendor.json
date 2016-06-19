@@ -15,12 +15,26 @@
 			"revisionTime": "2016-06-19T10:58:26Z"
 		},
 		{
-			"path": "github.com/cloudcloud/go-id3/id3",
-			"revision": ""
-		},
-		{
 			"checksumSHA1": "r0TNua5yJKMA8eHlGP89RwrKD2U=",
 			"path": "github.com/lib/pq",
+			"revision": "55196ec83d60d789e27b2627549bf00974a70084",
+			"revisionTime": "2016-03-28T15:34:59Z"
+		},
+		{
+			"checksumSHA1": "YcUl72sZPLFTE6RaKxr0H1IFHZs=",
+			"path": "github.com/lib/pq/certs",
+			"revision": "55196ec83d60d789e27b2627549bf00974a70084",
+			"revisionTime": "2016-03-28T15:34:59Z"
+		},
+		{
+			"checksumSHA1": "jaCQF1par6Jl8g+V2Cgp0n/0wSc=",
+			"path": "github.com/lib/pq/hstore",
+			"revision": "55196ec83d60d789e27b2627549bf00974a70084",
+			"revisionTime": "2016-03-28T15:34:59Z"
+		},
+		{
+			"checksumSHA1": "xppHi82MLqVx1eyQmbhTesAEjx8=",
+			"path": "github.com/lib/pq/oid",
 			"revision": "55196ec83d60d789e27b2627549bf00974a70084",
 			"revisionTime": "2016-03-28T15:34:59Z"
 		},
