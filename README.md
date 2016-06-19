@@ -1,18 +1,16 @@
 #nottify
+Audio streaming and cataloguing application built in Go.
+
 [![GoDoc](https://godoc.org/github.com/cloudcloud/nottify?status.svg)](https://godoc.org/github.com/cloudcloud/nottify)
 [![Circle CI](https://circleci.com/gh/cloudcloud/nottify.svg?style=svg)](https://circleci.com/gh/cloudcloud/nottify)
 
-Nottify is a self-managed music streaming service. For those with many media files, and multiple devices, each without mass storage capabilities, this provides a way to stream on demand. A command line interface to easily configure and script the installation opens the way to use the clean and simple web interface.
+Nottify is a self-managed music streaming service. For those with many media files, and multiple devices, each without
+mass storage capabilities, this provides a way to stream on demand. A command line interface to easily configure and
+script the installation opens the way to use the clean and simple web interface.
 
 ##requirements
-Using ``go get`` all requirements are automatically loaded.
-
-```
-github.com/cloudcloud/go-id3
-github.com/go-martini/martini
-gopkg.in/yaml.v2
-github.com/lib/pq
-```
+Using ``go get`` all requirements are automatically loaded. Vendoring is used to keep the explicit copy of a
+particular dependency available, and managed using the [govendor](https://github.com/kardianos/govendor) tool.
 
 ##usage
 Initial usage requires processing of base content, after setting up configuration requirements. This
@@ -50,3 +48,6 @@ is also provided through the web, the CLI also provides the capability.
 When the file system changes heavily, it may be useful to clear existing data and allow for ``ingest``
 to perform fresh analysis. This is also useful for emptying cached content, when manual changes are
 being made or configurations updated.
+
+###start
+Open the http process, and begin serving http requests.

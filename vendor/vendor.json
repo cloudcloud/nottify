@@ -1,0 +1,35 @@
+{
+	"comment": "",
+	"ignore": "test",
+	"package": [
+		{
+			"checksumSHA1": "cMpZCWt9NkPBwuaj6muqkqQJVDM=",
+			"path": "github.com/cloudcloud/go-id3",
+			"revision": "9861c34ec7d5fbc421b49e15ec3cc55e0f1ac992",
+			"revisionTime": "2016-06-19T10:58:26Z"
+		},
+		{
+			"checksumSHA1": "EbKu800i0SOibonm8NQAo0o9exI=",
+			"path": "github.com/cloudcloud/go-id3/frames",
+			"revision": "9861c34ec7d5fbc421b49e15ec3cc55e0f1ac992",
+			"revisionTime": "2016-06-19T10:58:26Z"
+		},
+		{
+			"path": "github.com/cloudcloud/go-id3/id3",
+			"revision": ""
+		},
+		{
+			"checksumSHA1": "r0TNua5yJKMA8eHlGP89RwrKD2U=",
+			"path": "github.com/lib/pq",
+			"revision": "55196ec83d60d789e27b2627549bf00974a70084",
+			"revisionTime": "2016-03-28T15:34:59Z"
+		},
+		{
+			"checksumSHA1": "+OgOXBoiQ+X+C2dsAeiOHwBIEH0=",
+			"path": "gopkg.in/yaml.v2",
+			"revision": "a83829b6f1293c91addabc89d0571c246397bbf4",
+			"revisionTime": "2016-03-01T20:40:22Z"
+		}
+	],
+	"rootPath": "/github.com/cloudcloud/nottify"
+}

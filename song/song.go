@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"os"
 
-	"github.com/cloudcloud/go-id3/id3"
+	id3 "github.com/cloudcloud/go-id3"
 )
 
 // Song is the data container and method provider for working with a Song.
@@ -36,22 +36,14 @@ func (s *Song) FromFile(f os.FileInfo, filename string) error {
 	s.Filesize = int(f.Size())
 
 	// parse the id3 and push to database
-	i, err := id3.New(filename)
+	i := &id3.File{Debug: false}
+	h, err := os.Open(s.Filename)
 	if err != nil {
-		return err
+		return fmt.Errorf("File bad")
 	}
+	defer h.Close()
 
-	i = i.Process()
-	fmt.Printf("%s - %s [%s] (%v)\n", i.GetArtist(), i.GetTitle(), i.GetAlbum(), i.GetTrackNumber())
-
-	s.Artist = i.GetArtist()
-	s.Title = i.GetTitle()
-	s.Album = i.GetAlbum()
-	s.Length = i.GetLength()
-	s.Genre = i.GetGenre()
-	s.Track = i.GetTrackNumber()
-	s.Comment = i.GetComment()
-	s.Year = i.GetReleaseYear()
+	i.Process(h)
 
 	return nil
 }
