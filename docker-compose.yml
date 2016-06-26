@@ -1,0 +1,22 @@
+version: "2"
+services:
+
+  nottify:
+    build: .
+    environment:
+      NOTTIFY_FILE_DIR:
+    volumes:
+      - /opt/music/
+    ports:
+      - "6135:80"
+    depends_on:
+      - pgsql
+
+  pgsql:
+    image: postgres:latest
+    volumes:
+      - database:/var/lib/postgresql/data
+
+volumes:
+  database:
+    driver: local

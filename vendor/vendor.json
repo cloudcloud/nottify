@@ -39,10 +39,24 @@
 			"revisionTime": "2016-03-28T15:34:59Z"
 		},
 		{
+			"checksumSHA1": "jxORqtJ6VSFi4F45Wg1wxc2aUsc=",
+			"path": "github.com/ogier/pflag",
+			"revision": "45c278ab3607870051a2ea9040bb85fcb8557481",
+			"revisionTime": "2016-01-29T22:01:14Z"
+		},
+		{
 			"checksumSHA1": "+OgOXBoiQ+X+C2dsAeiOHwBIEH0=",
 			"path": "gopkg.in/yaml.v2",
 			"revision": "a83829b6f1293c91addabc89d0571c246397bbf4",
 			"revisionTime": "2016-03-01T20:40:22Z"
+		},
+		{
+			"path": "https://github.com/ogier/pflag",
+			"revision": ""
+		},
+		{
+			"path": "https://github.com/ogier/pflag.git",
+			"revision": ""
 		}
 	],
 	"rootPath": "/github.com/cloudcloud/nottify"

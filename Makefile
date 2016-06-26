@@ -1,4 +1,7 @@
+# use docker-compose
+COMPOSE=docker-compose -p nottify -f docker-compose.yml
 
+# primarily for local usage
 install:
 	go get ./...
 
@@ -19,3 +22,20 @@ coverage:
 		grep -h -v "^mode: " "$(OUT).cover" >> "$(OUT).coverage"; \
 	done
 	@sed -i 's#github.com/cloudcloud/nottify/##' "$(OUT).coverage" && mv "$(OUT).coverage" "$(OUT).out"
+
+# primarily for containered usage
+compile:
+	@if [ -f "./nott" ]; then mv ./nott ./nott.bkp; fi
+	@GOOS=linux go build -a -tags netgo -ldflags '-w' -o nott . 2>&1
+	@if [ -f "./nott" ]; then rm ./nott.bkp; else mv ./nott.bkp ./nott; fi
+
+build: compile
+	$(COMPOSE) pull
+	$(COMPOSE) build
+
+up:
+	$(COMPOSE) up -d nottify
+
+down:
+	$(COMPOSE) kill
+	$(COMPOSE) rm --force
