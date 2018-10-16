@@ -1,0 +1,34 @@
+version: 2
+jobs:
+  build:
+    working_directory: &working_directory /usr/local/go/src/github.com/cloudcloud/nottify
+    docker:
+      - image: cloudcloud/golang:1.11
+    environment: &envorionment
+    steps:
+      - run:
+          name: Checkout code
+          command: git clone https://github.com/cloudcloud/nottify.git .
+      - run:
+          name: Run tests
+          command: |
+            set -eou pipefail
+            go test ./...
+      - run:
+          name: Artifact binary
+          command: |
+            go install ./...
+            mv `which nottify` ${CIRCLE_ARTIFACTS}/nottify
+      - run:
+          name: Coverage upload
+          command: |
+            go test -coverprofile=${CIRCLE_ARTIFACTS}/coverage.out ./...
+            go tool cover -html=${CIRCLE_ARTIFACTS}/coverage.out -o ${CIRCLE_ARTIFACTS}/coverage.html
+            go test -coverprofile=${CIRCLE_ARTIFACTS}/coverage.atomic -covermode=atomic ./...
+            bash <(curl -s https://codecov.io/bash) -f ${CIRCLE_ARTIFACTS}/coverage.atomic
+
+workflows:
+  version: 2
+  nottify:
+    jobs:
+      - build
