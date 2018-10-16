@@ -7,8 +7,10 @@ jobs:
     environment: &envorionment
     steps:
       - run:
-          name: Checkout code
-          command: git clone https://github.com/cloudcloud/nottify.git .
+          name: Prime code
+          command: |
+            git clone https://github.com/cloudcloud/nottify.git .
+            go mod download
       - run:
           name: Run tests
           command: |
