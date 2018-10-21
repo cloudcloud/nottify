@@ -6,15 +6,13 @@ import (
 	"os"
 	"path/filepath"
 	"strings"
-
-	"github.com/cloudcloud/nottify/song"
 )
 
 // Nottify provides the shared object state.
 type Nottify struct {
-	songList []song.Song
-	config   *Config
-	db       *Db
+	//songList []song.Song
+	config *Config
+	db     *Db
 }
 
 // ChanMsg defines details about found files during ingestion.
@@ -57,15 +55,16 @@ func (n *Nottify) Ingest() (string, error) {
 			if !more {
 				mainChannel <- fmt.Sprintf("\nFinished Processing. Total of [%v] tracks ingested.\n", songCount)
 			} else {
-				song := song.New()
+				_ = j
+				//song := song.New()
 
-				err = song.FromFile(j.info, j.file)
-				if err != nil {
-					// pad out - these could just be already known tracks
-				} else {
-					// increment result set
-					songCount++
-				}
+				//err = song.FromFile(j.info, j.file)
+				//if err != nil {
+				// pad out - these could just be already known tracks
+				//} else {
+				// increment result set
+				//songCount++
+				//}
 			}
 		}
 	}()

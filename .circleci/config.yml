@@ -5,29 +5,35 @@ jobs:
     docker:
       - image: cloudcloud/golang:1.11
     environment: &envorionment
+      CIRCLE_ARTIFACTS: /tmp/artifacts
     steps:
       - run:
           name: Prime code
           command: |
             git clone https://github.com/cloudcloud/nottify.git .
             go mod download
+            mkdir -p ${CIRCLE_ARTIFACTS}
       - run:
           name: Run tests
           command: |
             set -eou pipefail
-            go test ./...
+            go test -race ./...
       - run:
           name: Artifact binary
           command: |
             go install ./...
             mv `which nottify` ${CIRCLE_ARTIFACTS}/nottify
       - run:
-          name: Coverage upload
+          name: Coverage Generation
           command: |
-            go test -coverprofile=${CIRCLE_ARTIFACTS}/coverage.out ./...
-            go tool cover -html=${CIRCLE_ARTIFACTS}/coverage.out -o ${CIRCLE_ARTIFACTS}/coverage.html
-            go test -coverprofile=${CIRCLE_ARTIFACTS}/coverage.atomic -covermode=atomic ./...
+            go test -race -coverprofile=${CIRCLE_ARTIFACTS}/c.out -covermode=atomic ./...
+            go tool cover -html=${CIRCLE_ARTIFACTS}/c.out -o ${CIRCLE_ARTIFACTS}/coverage.html
+      - run:
+          name: Code Cov Upload
+          command: |
             bash <(curl -s https://codecov.io/bash) -f ${CIRCLE_ARTIFACTS}/coverage.atomic
+      - store_artifacts:
+          path: ${CIRCLE_ARTIFACTS}
 
 workflows:
   version: 2
