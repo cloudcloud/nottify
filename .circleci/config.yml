@@ -30,8 +30,12 @@ jobs:
             go tool cover -html=${CIRCLE_ARTIFACTS}/c.out -o ${CIRCLE_ARTIFACTS}/coverage.html
       - run:
           name: Code Cov Upload
+          command: bash <(curl -s https://codecov.io/bash) -f ${CIRCLE_ARTIFACTS}/coverage.atomic
+      - run:
+          name: CodeClimate Upload
           command: |
-            bash <(curl -s https://codecov.io/bash) -f ${CIRCLE_ARTIFACTS}/coverage.atomic
+            sed -i s#github.com/cloudcloud/nottify/## ${CIRCLE_ARTIFACTS}/c.out
+            ./cc-test-reporter after-build -t gocov
       - store_artifacts:
           path: ${CIRCLE_ARTIFACTS}
 

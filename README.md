@@ -4,6 +4,8 @@
 [![Circle CI](https://circleci.com/gh/cloudcloud/nottify.svg?style=svg)](https://circleci.com/gh/cloudcloud/nottify)
 [![Go Report Card](https://goreportcard.com/badge/github.com/cloudcloud/nottify)](https://goreportcard.com/report/github.com/cloudcloud/nottify)
 [![codecov](https://codecov.io/gh/cloudcloud/nottify/branch/master/graph/badge.svg)](https://codecov.io/gh/cloudcloud/nottify)
+[![Maintainability](https://api.codeclimate.com/v1/badges/2ebd672cd67599c7116b/maintainability)](https://codeclimate.com/github/cloudcloud/nottify/maintainability)
+[![Test Coverage](https://api.codeclimate.com/v1/badges/2ebd672cd67599c7116b/test_coverage)](https://codeclimate.com/github/cloudcloud/nottify/test_coverage)
 
 Nottify is a self-managed music streaming service. For those with many media files, and multiple devices, each without mass storage capabilities, this provides a way to stream on demand. A command line interface to easily configure and script the installation opens the way to use the clean and simple web interface.
 
