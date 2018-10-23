@@ -7,10 +7,10 @@ jobs:
     environment: &envorionment
       CIRCLE_ARTIFACTS: /tmp/artifacts
     steps:
+      - checkout
       - run:
           name: Prime code
           command: |
-            git clone https://github.com/cloudcloud/nottify.git .
             go mod download
             mkdir -p ${CIRCLE_ARTIFACTS}
       - run:
