@@ -39,7 +39,7 @@ jobs:
       - run:
           name: CodeClimate Upload
           command: |
-            sed -i s#github.com/cloudcloud/nottify/## ${CIRCLE_ARTIFACTS}/c.out
+            sed s#github.com/cloudcloud/nottify/## ${CIRCLE_ARTIFACTS}/c.out > ./c.out
             ./cc-test-reporter after-build -t gocov
       - store_artifacts:
           path: ${CIRCLE_ARTIFACTS}
