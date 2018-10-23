@@ -24,6 +24,11 @@ jobs:
             go install ./...
             mv `which nottify` ${CIRCLE_ARTIFACTS}/nottify
       - run:
+          name: Setup CodeClimate Reporter
+          command: |
+            curl -L https://codeclimate.com/downloads/test-reporter/test-reporter-latest-linux-amd64 > ./cc-test-reporter
+            chmod +x ./cc-test-reporter
+      - run:
           name: Coverage Generation
           command: |
             go test -race -coverprofile=${CIRCLE_ARTIFACTS}/c.out -covermode=atomic ./...
