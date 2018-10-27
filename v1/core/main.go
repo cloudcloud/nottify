@@ -2,15 +2,27 @@
 package core
 
 import (
+	"fmt"
+	"os"
+
 	"github.com/cloudcloud/nottify/v1/config"
 )
 
-// CLI will prepare for a CLI session.
-func CLI() {
-	c, err := config.FromFile("")
+// Nottify gives structure to working with command line actions for
+// managing and working with Nottify itself.
+type Nottify struct {
+	Args    []string
+	Command string
+	Config  config.Config
+}
+
+// Init prepares and sets up a local installation of Nottify.
+func (n *Nottify) Init(f string) {
+	c, err := config.FromFile(f, os.Stdout)
 	if err != nil {
 		panic(err)
 	}
 
-	_ = c
+	n.Config = c
+	c.O(config.Message, fmt.Sprintf("Setup config at %s!\nEnjoy!", f))
 }

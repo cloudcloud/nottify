@@ -34,17 +34,18 @@ func main() {
 		fmt.Printf("Command selection is [%s]\n", cmd)
 	}
 
-	// kick off into the core app with data parsed from kingpin
-	core.CLI()
+	app(cmd, args, k)
 }
 
 func setupKingpin(k *kingpin.Application) *kingpin.Application {
 	c["debug"] = k.Flag("debug", "Enable debug mode.").
 		Short('d').Default("false").Bool()
+	c["dry-run"] = k.Flag("dry-run", "Run the command in dry-run mode.").
+		Short('r').Default("false").Bool()
+	c["initFile"] = k.Flag("filename", "Filename for the configuration to use.").
+		Short('c').Default(".nottify.json").String()
 
-	init := k.Command("init", "Initialise the local Nottify instance.")
-	c["initPath"] = init.Arg("path", "Base path for Configuration to be placed.").
-		Default("./.config.yaml").String()
+	k.Command("init", "Initialise the local Nottify instance.")
 
 	ingest := k.Command("ingest", "Ingest files from the configured locations.")
 	c["ingestPaths"] = ingest.Arg("paths", "Paths to include for ingestion.").
@@ -55,4 +56,23 @@ func setupKingpin(k *kingpin.Application) *kingpin.Application {
 		Short('f').Default("false").Bool()
 
 	return k
+}
+
+func app(cmd string, args []string, k *kingpin.Application) {
+	app := &core.Nottify{
+		Args:    args,
+		Command: cmd,
+	}
+
+	switch cmd {
+	case "init":
+		app.Init(*c["initFile"].(*string))
+
+	case "ingest":
+
+	case "start":
+
+	default:
+		k.Usage(args)
+	}
 }
