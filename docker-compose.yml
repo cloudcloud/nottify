@@ -1,0 +1,23 @@
+version: '3'
+services:
+  nottify:
+    image: golang:1.11
+    environment: &environment
+      PORT: 6135
+    volumes:
+      - /tmp/music
+    ports:
+      - "6135:6135"
+    depends_on:
+      - psql
+    entrypoint: [ "tail", "-f", "/dev/null" ]
+
+  psql:
+    image: postgres:latest
+    volumes:
+      - database:/var/lib/postgresql/data
+
+volumes:
+  database:
+    driver: local
+

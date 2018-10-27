@@ -1,0 +1,51 @@
+version: 2
+jobs:
+  build:
+    working_directory: &working_directory /nottify
+    docker:
+      - image: cloudcloud/golang:1.11
+    environment: &envorionment
+      CIRCLE_ARTIFACTS: /tmp/artifacts
+    steps:
+      - checkout
+      - run:
+          name: Prime code
+          command: |
+            go mod download
+            mkdir -p ${CIRCLE_ARTIFACTS}
+      - run:
+          name: Run tests
+          command: |
+            set -eou pipefail
+            go test -race ./...
+      - run:
+          name: Artifact binary
+          command: |
+            go install ./...
+            mv `which nottify` ${CIRCLE_ARTIFACTS}/nottify
+      - run:
+          name: Setup CodeClimate Reporter
+          command: |
+            curl -L https://codeclimate.com/downloads/test-reporter/test-reporter-latest-linux-amd64 > ./cc-test-reporter
+            chmod +x ./cc-test-reporter
+      - run:
+          name: Coverage Generation
+          command: |
+            go test -race -coverprofile=${CIRCLE_ARTIFACTS}/c.out -covermode=atomic ./...
+            go tool cover -html=${CIRCLE_ARTIFACTS}/c.out -o ${CIRCLE_ARTIFACTS}/coverage.html
+      - run:
+          name: Code Cov Upload
+          command: bash <(curl -s https://codecov.io/bash) -f ${CIRCLE_ARTIFACTS}/coverage.atomic
+      - run:
+          name: CodeClimate Upload
+          command: |
+            sed s#github.com/cloudcloud/nottify/## ${CIRCLE_ARTIFACTS}/c.out > ./c.out
+            ./cc-test-reporter after-build -t gocov
+      - store_artifacts:
+          path: ${CIRCLE_ARTIFACTS}
+
+workflows:
+  version: 2
+  nottify:
+    jobs:
+      - build
