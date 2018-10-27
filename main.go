@@ -48,8 +48,10 @@ func setupKingpin(k *kingpin.Application) *kingpin.Application {
 	k.Command("init", "Initialise the local Nottify instance.")
 
 	ingest := k.Command("ingest", "Ingest files from the configured locations.")
-	c["ingestPaths"] = ingest.Arg("paths", "Paths to include for ingestion.").
-		Default("").Strings()
+	c["ingestPaths"] = ingest.Arg(
+		"paths",
+		"Paths to include for ingestion. If empty, all configured paths will be used.",
+	).Default("").Strings()
 
 	start := k.Command("start", "Bring up the Nottify server.")
 	c["start"] = start.Flag("foreground", "Run the server in the foreground.").
