@@ -27,8 +27,10 @@ const (
 
 // Config is a behaviour to provide ease of configuration access.
 type Config interface {
+	GetDirs() []string
 	GetDsn() string
 	GetFilename() string
+	KnownDir(string) bool
 
 	D(string)
 	O(string, string)
@@ -54,6 +56,11 @@ type Database struct {
 	User        string `json:"user"`
 }
 
+// GetDirs will provide all known directories from configuration.
+func (c *BaseConfig) GetDirs() []string {
+	return c.Dirs
+}
+
 // GetDsn will provide the standard database connection string.
 func (c *BaseConfig) GetDsn() string {
 	return fmt.Sprintf(
@@ -69,6 +76,17 @@ func (c *BaseConfig) GetDsn() string {
 // GetFilename will give the current location for this configuration.
 func (c *BaseConfig) GetFilename() string {
 	return c.Filename
+}
+
+// KnownDir determines if the provided directory string is already known in config.
+func (c *BaseConfig) KnownDir(d string) bool {
+	for _, x := range c.Dirs {
+		if x == d {
+			return true
+		}
+	}
+
+	return false
 }
 
 // D will print a debug message.
