@@ -58,6 +58,7 @@ type Database struct {
 
 // GetDirs will provide all known directories from configuration.
 func (c *BaseConfig) GetDirs() []string {
+	c.O(Warn, fmt.Sprintf("Dirs are [%s]", c.Dirs))
 	return c.Dirs
 }
 
@@ -119,7 +120,7 @@ func (c *BaseConfig) O(t, m string) {
 }
 
 // FromFile will use the provided file to instantiate configuration.
-func FromFile(f string, out io.Writer) (Config, error) {
+func FromFile(f string, out io.Writer, d bool) (Config, error) {
 	if len(f) < 1 {
 		f = fmt.Sprintf(
 			"%s%s%s",
@@ -133,6 +134,7 @@ func FromFile(f string, out io.Writer) (Config, error) {
 	if _, err = os.Stat(f); err != nil {
 		c := defaultConfig(out)
 		c.Filename = f
+		c.Debug = d
 		err = writeConfig(c)
 
 		c.D("Written base Config")
@@ -144,6 +146,7 @@ func FromFile(f string, out io.Writer) (Config, error) {
 	err = json.NewDecoder(h).Decode(c)
 
 	c.o = out
+	c.Debug = d
 	c.D("Loaded base Config")
 
 	return c, err

@@ -1,6 +1,7 @@
 package core
 
 import (
+	"fmt"
 	"os"
 )
 
@@ -20,27 +21,31 @@ var (
 // For each file, push into the file chan
 
 func (n *Nottify) Ingest(p []string) {
-	dirCount := 0
-	if len(p) > 0 {
-		for _, x := range p {
-			// check if x is in n.Config.GetDirs()
-			if n.Config.KnownDir(x) {
-				n.runDir(x)
-				dirCount++
-			}
-		}
-	} else {
-		for _, x := range n.Config.GetDirs() {
-			n.runDir(x)
-			dirCount++
+	if len(p[0]) < 1 {
+		p = make([]string, len(n.Config.GetDirs()))
+		copy(p, n.Config.GetDirs())
+	}
+
+	for _, x := range p {
+		if n.Config.KnownDir(x) {
+			go n.runDir(x, dirCh)
+		} else if len(x) > 0 {
+			n.Config.D(fmt.Sprintf("Unknown dir [%s]", x))
 		}
 	}
 
-	//
-	for i := 0; i < dirCount; i++ {
+	for i := 0; i < len(p); i++ {
 		<-dirCh
 	}
+
+	close(dirCh)
 }
 
-func (n *Nottify) runDir(d string) {
+func (n *Nottify) runDir(d string, ch chan string) {
+	//
+	n.Config.D(fmt.Sprintf("Within runDir [%s]", d))
+
+	ch <- "Complete"
+
+	n.Config.D("After complete chan")
 }

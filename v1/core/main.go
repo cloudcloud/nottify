@@ -2,8 +2,7 @@
 package core
 
 import (
-	"fmt"
-	"os"
+	"io"
 
 	"github.com/cloudcloud/nottify/v1/config"
 )
@@ -14,15 +13,21 @@ type Nottify struct {
 	Args    []string
 	Command string
 	Config  config.Config
+	Debug   bool
 }
 
 // Init prepares and sets up a local installation of Nottify.
-func (n *Nottify) Init(f string) {
-	c, err := config.FromFile(f, os.Stdout)
+func (n *Nottify) Init(f string, o io.Writer) *Nottify {
+	err := n.setupConfig(f, o)
 	if err != nil {
 		panic(err)
 	}
 
-	n.Config = c
-	c.O(config.Message, fmt.Sprintf("Setup config at %s!\nEnjoy!", f))
+	return n
+}
+
+func (n *Nottify) setupConfig(f string, o io.Writer) error {
+	var err error
+	n.Config, err = config.FromFile(f, o, n.Debug)
+	return err
 }
