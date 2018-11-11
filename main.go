@@ -8,7 +8,7 @@ import (
 
 	"github.com/cloudcloud/nottify/v1/config"
 	"github.com/cloudcloud/nottify/v1/core"
-	"gopkg.in/alecthomas/kingpin.v2"
+	kingpin "gopkg.in/alecthomas/kingpin.v2"
 )
 
 var (
@@ -29,10 +29,6 @@ func main() {
 	if err != nil {
 		k.Usage(args)
 		return
-	}
-
-	if *c["debug"].(*bool) {
-		fmt.Printf("nottify,debug,'Command is [%s]'\n", cmd)
 	}
 
 	app(cmd, args, k)
@@ -69,15 +65,18 @@ func app(cmd string, args []string, k *kingpin.Application) {
 		Debug:   *c["debug"].(*bool),
 	}
 
+	app.
+		Init(f, os.Stdout).
+		Config.D(fmt.Sprintf("Command is '%s'", cmd))
+
+	// select the right command to execute
 	switch cmd {
 	case "init":
 		app.
-			Init(f, os.Stdout).
-			Config.O(config.Message, fmt.Sprintf("Setup config at %s!\nEnjoy!", f))
+			Config.O(config.Error, fmt.Sprintf("Setup config at %s! Enjoy!", f))
 
 	case "ingest":
 		app.
-			Init(f, os.Stdout).
 			Ingest(*c["ingestPaths"].(*[]string))
 
 	case "start":

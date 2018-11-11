@@ -5,7 +5,7 @@ type Song interface {
 }
 
 // BaseSong is a structure to contain data for a Song.
-type BaseStrong struct {
+type BaseSong struct {
 	FilePath string `json:"file_path"`
 }
 

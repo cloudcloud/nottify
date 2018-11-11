@@ -24,4 +24,4 @@ _testmain.go
 conf.yml
 nott
 coverage.html
-
+.nottify.json

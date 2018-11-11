@@ -13,17 +13,34 @@ import (
 	"fmt"
 	"io"
 	"io/ioutil"
+	"log"
 	"os"
+	"os/exec"
+	"runtime/debug"
 	"strings"
 	"time"
 )
 
 const (
-	Error   = "error"
-	Info    = "info"
-	Message = "message"
-	Warn    = "warn"
+	ErrorLevels = iota
+	Error
+	Warn
+	Info
+	Debug
 )
+
+var (
+	hostname = ""
+)
+
+func init() {
+	cmd, err := exec.Command("hostname").Output()
+	if err != nil {
+		log.Fatal("Unable to determine hostname")
+	}
+
+	hostname = strings.TrimSpace(string(cmd))
+}
 
 // Config is a behaviour to provide ease of configuration access.
 type Config interface {
@@ -33,7 +50,7 @@ type Config interface {
 	KnownDir(string) bool
 
 	D(string)
-	O(string, string)
+	O(int, string)
 }
 
 // BaseConfig provides structure around keeping configuration data.
@@ -56,9 +73,19 @@ type Database struct {
 	User        string `json:"user"`
 }
 
+type message struct {
+	Agent string `json:"_agent"`
+
+	Host         string    `json:"host"`
+	Level        int       `json:"level"`
+	LongMessage  string    `json:"long_message"`
+	ShortMessage string    `json:"short_message"`
+	Timestamp    time.Time `json:"timestamp"`
+	Version      string    `json:"version"`
+}
+
 // GetDirs will provide all known directories from configuration.
 func (c *BaseConfig) GetDirs() []string {
-	c.O(Warn, fmt.Sprintf("Dirs are [%s]", c.Dirs))
 	return c.Dirs
 }
 
@@ -93,30 +120,34 @@ func (c *BaseConfig) KnownDir(d string) bool {
 // D will print a debug message.
 func (c *BaseConfig) D(m string) {
 	if c.Debug {
-		fmt.Fprintf(
-			c.o,
-			"nottify,debug,%v,%s\n",
-			time.Now().Format("2006-02-01_03:04:05PM_MST"),
-			m,
-		)
+
+		c.O(Debug, m)
 	}
 }
 
 // O will print a message out.
-func (c *BaseConfig) O(t, m string) {
-	if t == Message {
-		fmt.Fprintln(c.o, m)
+func (c *BaseConfig) O(t int, m string) {
+	l := &message{
+		Agent:        "nottify",
+		Host:         hostname,
+		ShortMessage: m,
+		LongMessage:  "",
+		Level:        t,
+		Timestamp:    time.Now(),
+		Version:      "1.1",
+	}
 
+	if t == Debug {
+		l.LongMessage = string(debug.Stack())
+	}
+
+	o, err := json.Marshal(l)
+	if err != nil {
+		fmt.Fprintln(c.o, m)
 		return
 	}
 
-	fmt.Fprintf(
-		c.o,
-		"nottify,%s,%v,'%s'\n",
-		t,
-		time.Now().Format("2006-02-01_03:04:05.000PM_MST"),
-		strings.Replace(m, "'", "\\'", -1),
-	)
+	fmt.Fprintln(c.o, string(o))
 }
 
 // FromFile will use the provided file to instantiate configuration.
@@ -148,6 +179,7 @@ func FromFile(f string, out io.Writer, d bool) (Config, error) {
 	c.o = out
 	c.Debug = d
 	c.D("Loaded base Config")
+	c.D(fmt.Sprintf("Dirs are %s", c.Dirs))
 
 	return c, err
 }
