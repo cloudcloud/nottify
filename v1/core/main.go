@@ -3,6 +3,7 @@ package core
 
 import (
 	"io"
+	"sync"
 
 	"github.com/cloudcloud/nottify/v1/config"
 )
@@ -14,6 +15,10 @@ type Nottify struct {
 	Command string
 	Config  config.Config
 	Debug   bool
+
+	fc chan entry
+	m  *sync.Map
+	wg sync.WaitGroup
 }
 
 // Init prepares and sets up a local installation of Nottify.

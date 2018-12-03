@@ -4,7 +4,9 @@ import (
 	"fmt"
 	"os"
 	"path/filepath"
-	"strings"
+	"sync"
+
+	"github.com/cloudcloud/nottify/v1/config"
 )
 
 type entry struct {
@@ -12,69 +14,73 @@ type entry struct {
 	path string
 }
 
-var (
-	count  = 0
-	fileCh = make(chan entry, 10)
-)
-
 // Ingest is the gateway for executing an ingestion process
 // within Nottify.
 func (n *Nottify) Ingest(p []string) {
-	dirCh := make(chan string)
-	defer close(dirCh)
+	n.m = &sync.Map{}
+	n.fc = make(chan entry, 40)
+	defer close(n.fc)
 
 	if len(p[0]) < 1 {
 		p = make([]string, len(n.Config.GetDirs()))
 		copy(p, n.Config.GetDirs())
 	}
 
+	go n.handleFile()
 	for _, x := range p {
-		if n.Config.KnownDir(x) {
-			go filepath.Walk(x, n.checkFile)
-		} else if len(x) > 0 {
-			n.Config.D(fmt.Sprintf("Unknown dir [%s]", x))
-		}
+		n.processDir(x)
 	}
 
-	go n.handleFile(fileCh, dirCh)
+	n.wg.Wait()
 
-	for i := 0; i < len(p); i++ {
-		<-dirCh
-	}
+	count := 0
+	n.m.Range(func(k, v interface{}) bool {
+		count++
+		return true
+	})
 
-	n.Config.D("Completed processing all dirs!")
-
-	close(dirCh)
-	close(fileCh)
-}
-
-func (n *Nottify) handleFile(ch chan entry, cl chan string) {
-	for {
-		s, more := <-ch
-		if !more {
-			n.Config.D("Completed files")
-
-			cl <- "Completed"
-		} else {
-			n.Config.D(fmt.Sprintf("Found audio file [%s]", s.path))
-		}
-	}
+	n.Config.O(config.Info, fmt.Sprintf("Completed processing all dirs! Found %v songs!", count))
 }
 
 func (n *Nottify) checkFile(path string, info os.FileInfo, err error) error {
 	if err != nil {
-		return err
+		return nil
 	}
 
 	if isGoodFile(info) {
-		fileCh <- entry{file: info, path: path}
+		n.wg.Add(1)
+		n.fc <- entry{file: info, path: path}
 	}
 
-	return err
+	return nil
+}
+
+func (n *Nottify) handleFile() {
+	for {
+		s, more := <-n.fc
+
+		if !more {
+			return
+		} else {
+			n.Config.D(fmt.Sprintf("Found audio file [%s]", s.path))
+			n.m.Store(s.path, s)
+			n.wg.Done()
+		}
+	}
+}
+
+func (n *Nottify) processDir(d string) {
+	if n.Config.KnownDir(d) {
+		n.Config.O(config.Info, fmt.Sprintf("Processing %s", d))
+
+		filepath.Walk(d, n.checkFile)
+	} else if len(d) > 0 {
+		n.Config.D(fmt.Sprintf("Unknown dir [%s]", d))
+	}
 }
 
 func isGoodFile(f os.FileInfo) bool {
-	if strings.HasSuffix(f.Name(), ".mp3") && !f.IsDir() {
+	if f != nil && !f.IsDir() && filepath.Ext(f.Name()) == ".mp3" {
 		return true
 	}
 
