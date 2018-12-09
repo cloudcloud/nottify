@@ -6,6 +6,7 @@ import (
 	"path/filepath"
 	"sync"
 
+	"github.com/cloudcloud/nottify/v1"
 	"github.com/cloudcloud/nottify/v1/config"
 )
 
@@ -63,7 +64,15 @@ func (n *Nottify) handleFile() {
 			return
 		} else {
 			n.Config.D(fmt.Sprintf("Found audio file [%s]", s.path))
-			n.m.Store(s.path, s)
+
+			song, err := v1.FromFile(s.path)
+			if err != nil {
+				n.Config.O(config.Error, fmt.Sprintf("Unable to parse %s: %s", s.path, err))
+			} else {
+				n.Config.O(config.Info, fmt.Sprintf("%s: %s (%s)", song.GetArtist(), song.GetTitle(), s.path))
+				n.m.Store(s.path, song)
+			}
+
 			n.wg.Done()
 		}
 	}

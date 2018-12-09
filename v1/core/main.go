@@ -15,6 +15,7 @@ type Nottify struct {
 	Command string
 	Config  config.Config
 	Debug   bool
+	Level   int
 
 	fc chan entry
 	m  *sync.Map
@@ -32,7 +33,9 @@ func (n *Nottify) Init(f string, o io.Writer) *Nottify {
 }
 
 func (n *Nottify) setupConfig(f string, o io.Writer) error {
-	var err error
-	n.Config, err = config.FromFile(f, o, n.Debug)
+	c, err := config.FromFile(f, o, n.Debug)
+	c.Level = n.Level
+	n.Config = c
+
 	return err
 }

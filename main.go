@@ -41,6 +41,8 @@ func setupKingpin(k *kingpin.Application) *kingpin.Application {
 		Short('r').Default("false").Bool()
 	c["initFile"] = k.Flag("filename", "Filename for the configuration to use.").
 		Short('c').Default(".nottify.json").String()
+	c["level"] = k.Flag("level", "Output level to use (1=Error, 2=Warn, 3=Info)").
+		Short('l').Default("2").Int()
 
 	k.Command("init", "Initialise the local Nottify instance.")
 
@@ -63,6 +65,7 @@ func app(cmd string, args []string, k *kingpin.Application) {
 		Args:    args,
 		Command: cmd,
 		Debug:   *c["debug"].(*bool),
+		Level:   *c["level"].(*int),
 	}
 
 	app.

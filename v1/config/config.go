@@ -59,6 +59,7 @@ type BaseConfig struct {
 	Dirs     []string `json:",flow"`
 	Database Database `json:"database"`
 	Filename string   `json:"-"`
+	Level    int      `json:"level"`
 
 	o io.Writer
 }
@@ -147,11 +148,13 @@ func (c *BaseConfig) O(t int, m string) {
 		return
 	}
 
-	fmt.Fprintln(c.o, string(o))
+	if c.Level >= t {
+		fmt.Fprintln(c.o, string(o))
+	}
 }
 
 // FromFile will use the provided file to instantiate configuration.
-func FromFile(f string, out io.Writer, d bool) (Config, error) {
+func FromFile(f string, out io.Writer, d bool) (*BaseConfig, error) {
 	if len(f) < 1 {
 		f = fmt.Sprintf(
 			"%s%s%s",
@@ -186,12 +189,14 @@ func FromFile(f string, out io.Writer, d bool) (Config, error) {
 
 func defaultConfig(out io.Writer) *BaseConfig {
 	return &BaseConfig{
-		Dirs: []string{"/opt/music/"},
+		Debug: false,
+		Dirs:  []string{"/opt/music/"},
 		Database: Database{
 			Database: "nottify",
 			Hostname: "localhost",
 		},
-		o: out,
+		Level: 2,
+		o:     out,
 	}
 }
 
